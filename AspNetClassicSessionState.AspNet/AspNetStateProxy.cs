@@ -62,7 +62,7 @@ namespace AspNetClassicSessionState.AspNet
             if (c == null)
                 throw new InvalidOperationException("Null HttpContext in cache. Cannot reenter ASP.Net request.");
 
-            var p = HttpContext.Current;
+            var p = HttpContext.Current; 
 
             try
             {
