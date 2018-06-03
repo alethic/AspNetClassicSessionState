@@ -3,51 +3,49 @@ using System.Runtime.InteropServices;
 
 namespace AspNetClassicSessionState.COM
 {
-    public partial class AspSessionStateClient
+
+    [Guid("CB2F6722-AB3A-11D2-9C40-00C04FA30A3E")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    interface ICorRuntimeHost
     {
-        [Guid("CB2F6722-AB3A-11D2-9C40-00C04FA30A3E")]
-        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        interface ICorRuntimeHost
-        {
-            void CreateLogicalThreadState();
 
-            void DeleteLogicalThreadState();
+        void CreateLogicalThreadState();
 
-            void SwitchInLogicalThreadState();
+        void DeleteLogicalThreadState();
 
-            void SwitchOutLogicalThreadState();
+        void SwitchInLogicalThreadState();
 
-            void LocksHeldByLogicalThread();
+        void SwitchOutLogicalThreadState();
 
-            void MapFile();
+        void LocksHeldByLogicalThread();
 
-            void GetConfiguration();
+        void MapFile();
 
-            void Start();
+        void GetConfiguration();
 
-            void Stop();
+        void Start();
 
-            void CreateDomain();
+        void Stop();
 
-            void GetDefaultDomain();
+        void CreateDomain();
 
-            void EnumDomains(out IntPtr enumHandle);
+        void GetDefaultDomain();
 
-            void NextDomain(IntPtr enumHandle, [MarshalAs(UnmanagedType.IUnknown)]ref object appDomain);
+        void EnumDomains(out IntPtr enumHandle);
 
-            void CloseEnum(IntPtr enumHandle);
+        void NextDomain(IntPtr enumHandle, [MarshalAs(UnmanagedType.IUnknown)]ref object appDomain);
 
-            void CreateDomainEx();
+        void CloseEnum(IntPtr enumHandle);
 
-            void CreateDomainSetup();
+        void CreateDomainEx();
 
-            void CreateEvidence();
+        void CreateDomainSetup();
 
-            void UnloadDomain();
+        void CreateEvidence();
 
-            void CurrentDomain();
-        }
+        void UnloadDomain();
 
+        void CurrentDomain();
     }
 
 }

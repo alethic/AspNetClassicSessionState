@@ -6,7 +6,7 @@ namespace AspNetClassicSessionState.COM
 
     [ComVisible(true)]
     [Guid("A232ABCA-A611-4789-B338-3D43ABDD43BF")]
-    public interface IAspSessionStateClient
+    public interface IAspNetState
     {
 
         /// <summary>

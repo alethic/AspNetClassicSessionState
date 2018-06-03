@@ -6,13 +6,11 @@
 <body>
 
     <%
-        Dim o
-        Set o = Server.CreateObject("AspNetClassicSessionState.COM.AspSessionStateClient")
-        o.Load()
+        AspNetState.Load()
         Response.Write "ASP.NET Variable: "
         Response.Write Session("ASPNetVar")
         Session("ASPClassicVar") = "THIS WAS SET BY ASP CLASSIC"
-        o.Save()
+        AspNetState.Save()
     %>
 
     <br />

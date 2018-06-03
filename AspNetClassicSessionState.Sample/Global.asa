@@ -1,0 +1,7 @@
+﻿<object
+    runat="server"
+    scope="Session"
+    id="AspNetState"
+    progid="AspNetClassicSessionState.COM.AspNetState">
+
+</object>

@@ -62,6 +62,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Global.asa" />
     <Content Include="test.aspx" />
     <Content Include="test.asp" />
     <Content Include="Web.config">

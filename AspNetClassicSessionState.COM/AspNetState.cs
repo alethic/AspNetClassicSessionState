@@ -14,25 +14,28 @@ namespace AspNetClassicSessionState.COM
     [ComVisible(true)]
     [Guid("4F132151-EFD8-4B12-BAD2-F86658585F02")]
     [ClassInterface(ClassInterfaceType.None)]
-    public partial class AspSessionStateClient :
-        IAspSessionStateClient,
+    public partial class AspNetState :
+        IAspNetState,
         IDisposable
     {
 
         readonly Lazy<IRequest> request;
         readonly Lazy<ISessionObject> session;
-        readonly Lazy<DynamicAspNetStateProxy> proxy;
+        readonly Lazy<AspStateProxyWrapper> proxy;
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
-        public AspSessionStateClient()
+        public AspNetState()
         {
-            this.request = new Lazy<IRequest>(() => (IRequest)ContextUtil.GetNamedProperty("Request"));
-            this.session = new Lazy<ISessionObject>(() => (ISessionObject)ContextUtil.GetNamedProperty("Session"));
-            this.proxy = new Lazy<DynamicAspNetStateProxy>(() => CreateProxy());
+            request = new Lazy<IRequest>(() => (IRequest)ContextUtil.GetNamedProperty("Request"));
+            session = new Lazy<ISessionObject>(() => (ISessionObject)ContextUtil.GetNamedProperty("Session"));
+            proxy = new Lazy<AspStateProxyWrapper>(() => CreateProxyWrapper());
         }
 
+        /// <summary>
+        /// Loads ASP session from ASP.Net.
+        /// </summary>
         public void Load()
         {
             // clear existing ASP session
@@ -44,6 +47,9 @@ namespace AspNetClassicSessionState.COM
                 session.Value[kvp.Key] = kvp.Value;
         }
 
+        /// <summary>
+        /// Saves ASP session to ASP.Net.
+        /// </summary>
         public void Save()
         {
             // copy session items from ASP to ASP.NET
@@ -60,10 +66,10 @@ namespace AspNetClassicSessionState.COM
         /// Creates a proxy into the ASP.Net AppDomain.
         /// </summary>
         /// <returns></returns>
-        dynamic CreateProxy()
+        dynamic CreateProxyWrapper()
         {
             // load previous stored variable containing AppDomain ID
-            var appDomainAppId = ((dynamic)request.Value.ServerVariables["APPL_MD_PATH"])[1];
+            var appDomainAppId = (string)((IStringList)request.Value.ServerVariables["APPL_MD_PATH"])[1];
             var appDomainIdKey = $"{appDomainAppId}_APPDOMAINID";
             var appDomainId = Environment.GetEnvironmentVariable(appDomainIdKey, EnvironmentVariableTarget.Process);
 
@@ -76,8 +82,10 @@ namespace AspNetClassicSessionState.COM
             if (appDomain == null)
                 throw new InvalidOperationException("Unable to discover hosting ASP.Net AppDomain. Ensure registration completed.");
 
-            var a = request.Value.ServerVariables["HTTP_ASPNETSTATEID"];
-            var c = a[1];
+            // unique ID for the request
+            var requestId = (string)((IStringList)request.Value.ServerVariables["HTTP_ASPNETSTATEID"])[1];
+            if (requestId == null)
+                throw new InvalidOperationException("Unable to discover ASP.Net Request ID. Ensure registration completed.");
 
             var aspNetProxy = (IStrongBox)appDomain.CreateInstanceAndUnwrap(
                 "AspNetClassicSessionState.AspNet",
@@ -85,16 +93,16 @@ namespace AspNetClassicSessionState.COM
                 false,
                 BindingFlags.Default,
                 null,
-                new[] { (string)((IStringList)request.Value.ServerVariables["HTTP_ASPNETSTATEID"])[1] },
+                new[] { requestId },
                 null,
                 null);
             if (aspNetProxy == null)
                 throw new InvalidOperationException("Unable to generate remote AspNetStateProxy in AppDomain.");
 
-            return new DynamicAspNetStateProxy(aspNetProxy);
+            return new AspStateProxyWrapper(aspNetProxy);
         }
 
-        class DynamicAspNetStateProxy
+        class AspStateProxyWrapper
         {
 
             readonly IStrongBox proxy;
@@ -103,7 +111,7 @@ namespace AspNetClassicSessionState.COM
             /// Initializes a new instance.
             /// </summary>
             /// <param name="proxy"></param>
-            public DynamicAspNetStateProxy(IStrongBox proxy)
+            public AspStateProxyWrapper(IStrongBox proxy)
             {
                 this.proxy = proxy ?? throw new ArgumentNullException(nameof(proxy));
             }

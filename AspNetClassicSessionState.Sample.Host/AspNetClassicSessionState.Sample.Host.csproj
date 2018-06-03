@@ -36,6 +36,9 @@
   <ItemGroup>
     <ProjectReference Include="..\AspNetClassicSessionState.AspNet\AspNetClassicSessionState.AspNet.csproj" />
     <ProjectReference Include="..\AspNetClassicSessionState.COM\AspNetClassicSessionState.COM.csproj" />
+    <ProjectReference Include="..\AspNetClassicSessionState.Sample\AspNetClassicSessionState.Sample.csproj">
+      <Private>false</Private>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>
