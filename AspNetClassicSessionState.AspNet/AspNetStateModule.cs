@@ -66,9 +66,7 @@ namespace AspNetClassicSessionState.AspNet
         IAsyncResult BeginOnBeginRequestAsync(object sender, EventArgs args, AsyncCallback cb, object extraData)
         {
             var r = Guid.NewGuid().ToString("N");
-            HttpContext.Current.Response.Write("");
             HttpContext.Current.Request.Headers.Add("ASPNETSTATEID", r);
-            HttpContext.Current.Response.Flush();
             AspNetStateProxy.SetContext(r, HttpContext.Current);
 
             return new CompletedAsyncResult(true);
