@@ -57,9 +57,6 @@ namespace AspNetClassicSessionState.COM
             foreach (string key in session.Value.Contents)
                 d[key] = session.Value[key];
             proxy.Value.Push(d);
-
-            // clear existing ASP session
-            session.Value.Contents.RemoveAll();
         }
 
         /// <summary>
