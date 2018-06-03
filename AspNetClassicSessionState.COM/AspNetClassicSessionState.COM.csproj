@@ -3,6 +3,9 @@
     <PropertyGroup>
       <TargetFramework>net47</TargetFramework>
       <EnableComExport>true</EnableComExport>
+      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+      <Authors>Jerome Haltom</Authors>
+      <Description>ASP.Net components for proxying ASP Classic Session State to ASP.Net. This package contains the ASP Classic COM object with an embedded Reg-Free manifest.</Description>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,10 +23,6 @@
     <ItemGroup>
       <PackageReference Include="FileAndServe.MSBuild.COM" Version="0.1.0-unstable0045" />
       <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\AspNetClassicSessionState.AspNet\AspNetClassicSessionState.AspNet.csproj" />
     </ItemGroup>
 
     <ItemGroup>

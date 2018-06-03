@@ -34,8 +34,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AspNetClassicSessionState.AspNet\AspNetClassicSessionState.AspNet.csproj" />
-    <ProjectReference Include="..\AspNetClassicSessionState.COM\AspNetClassicSessionState.COM.csproj" />
+    <ProjectReference Include="..\AspNetClassicSessionState.AspNet\AspNetClassicSessionState.AspNet.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\AspNetClassicSessionState.COM\AspNetClassicSessionState.COM.csproj">
+      <Private>true</Private>
+    </ProjectReference>
     <ProjectReference Include="..\AspNetClassicSessionState.Sample\AspNetClassicSessionState.Sample.csproj">
       <Private>false</Private>
     </ProjectReference>

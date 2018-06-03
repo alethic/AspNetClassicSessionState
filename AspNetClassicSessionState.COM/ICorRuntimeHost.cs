@@ -46,6 +46,7 @@ namespace AspNetClassicSessionState.COM
         void UnloadDomain();
 
         void CurrentDomain();
+
     }
 
 }
