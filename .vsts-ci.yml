@@ -19,14 +19,8 @@ steps:
     restoreSolution: AspNetClassicSessionState.sln
     vstsFeed: '74a5a491-5c25-48f8-a89a-00d9eded165b'
 
-- task: DotNetCoreCLI@1
-  inputs:
-    command: msbuild
-    projects: 'AspNetClassicSessionState.sln'
-    arguments: '/t:Restore /p:PackageVersion=$(GitVersion.NuGetVersion) /p:Version=$(GitVersion.NuGetVersion) /p:Configuration=$(BuildConfiguration)'
-
 - task: VSBuild@1
-  displayName:  AspNetClassicSessionState
+  displayName:  Visual Studio Build
   inputs:
     solution: AspNetClassicSessionState.sln
     vsVersion: 15.0
