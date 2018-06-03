@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Runtime.CompilerServices;
 using System.Web;
 
@@ -29,6 +30,11 @@ namespace AspNetClassicSessionState.AspNet
         /// <param name="key"></param>
         /// <returns></returns>
         public static HttpContext GetContext(string key) => cache.Get(key);
+
+        /// <summary>
+        /// Describes the prefix to insert before ASP.Net classic session state keys.
+        /// </summary>
+        public static string Prefix => ((AspNetClassicStateConfigurationSection)ConfigurationManager.GetSection("aspNetClassicSessionState"))?.Prefix ?? "ASP_";
 
 
         /// <summary>
@@ -63,7 +69,7 @@ namespace AspNetClassicSessionState.AspNet
                 HttpContext.Current = c;
 
                 foreach (var kvp in items)
-                    c.Session[kvp.Key] = kvp.Value;
+                    c.Session[Prefix + kvp.Key] = kvp.Value;
             }
             finally
             {
@@ -89,7 +95,8 @@ namespace AspNetClassicSessionState.AspNet
 
                 var d = new Dictionary<string, object>();
                 foreach (string key in c.Session)
-                    d[key] = c.Session[key];
+                    if (key.StartsWith(Prefix))
+                        d[key.Substring(Prefix.Length)] = c.Session[key];
                 return d;
             }
             finally

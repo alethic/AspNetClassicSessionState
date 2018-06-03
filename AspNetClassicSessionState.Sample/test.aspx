@@ -8,12 +8,12 @@
 <body>
     <%
         Response.Write("ASP Classic Variable: ");
-        Response.Write(Session["ASPClassicVar"]);
-        Session["ASPNetVar"] = "THIS WAS SET BY ASP.NET";
+        Response.Write(Session["ASP_ASPClassicVar"]);
+        Session["ASP_ASPNetVar"] = "THIS WAS SET BY ASP.NET";
     %>
 
     <br />
 
-    I saved a value to to the ASPNetVar variable. Go back to the <a href="Test.asp">ASP classic page</a> to see the value. 
+    I saved a value to to the ASP_ASPNetVar variable. Go back to the <a href="Test.asp">ASP classic page</a> to see the value. 
 </body>
 </html>

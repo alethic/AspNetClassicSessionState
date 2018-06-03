@@ -80,10 +80,6 @@
       <Project>{c6ed933b-7cf2-4390-aee9-8af479816bff}</Project>
       <Name>AspNetClassicSessionState.AspNet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AspNetClassicSessionState.COM\AspNetClassicSessionState.COM.csproj">
-      <Project>{d459d8a2-da71-463d-be26-f33b4dc57983}</Project>
-      <Name>AspNetClassicSessionState.COM</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
