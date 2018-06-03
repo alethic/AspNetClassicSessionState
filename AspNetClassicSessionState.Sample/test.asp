@@ -6,6 +6,8 @@
 <body>
 
     <%
+        Dim AspNetState
+        Set AspNetState = Server.CreateObject("AspNetClassicSessionState.COM.AspNetState")
         AspNetState.Load()
         Response.Write "ASP.NET Variable: "
         Response.Write Session("ASPNetVar")
