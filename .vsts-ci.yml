@@ -16,25 +16,25 @@ steps:
 
 - task: NuGetCommand@2
   inputs:
-    restoreSolution: AspNetClasicSessionState.sln
+    restoreSolution: AspNetClassicSessionState.sln
     vstsFeed: '74a5a491-5c25-48f8-a89a-00d9eded165b'
 
 - task: DotNetCoreCLI@1
   inputs:
     command: msbuild
-    projects: 'AspNetClasicSessionState.sln'
+    projects: 'AspNetClassicSessionState.sln'
     arguments: '/t:Restore /p:PackageVersion=$(GitVersion.NuGetVersion) /p:Version=$(GitVersion.NuGetVersion) /p:Configuration=$(BuildConfiguration)'
 
 - task: VSBuild@1
-  displayName:  AspNetClasicSessionState
+  displayName:  AspNetClassicSessionState
   inputs:
-    solution: AspNetClasicSessionState.sln
+    solution: AspNetClassicSessionState.sln
     vsVersion: 15.0
     platform: $(BuildPlatform)
     configuration: $(BuildConfiguration)
     maximumCpuCount: true
     msbuildArchitecture: x64
-    msbuildArgs: /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\AspNetClasicSessionState /p:PackageVersion=$(GitVersion.NuGetVersion) /p:AssemblyVersion=$(GitVersion.AssemblySemVer)
+    msbuildArgs: /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\AspNetClassicSessionState /p:PackageVersion=$(GitVersion.NuGetVersion) /p:AssemblyVersion=$(GitVersion.AssemblySemVer)
     
 - task: VSTest@2
   displayName: Run Unit Tests
@@ -53,8 +53,8 @@ steps:
     publishRunAttachments: true
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: AspNetClasicSessionState NuGet'
+  displayName: 'Publish Artifact: AspNetClassicSessionState NuGet'
   inputs:
-    pathToPublish: $(Build.ArtifactStagingDirectory)\AspNetClasicSessionState
+    pathToPublish: $(Build.ArtifactStagingDirectory)\AspNetClassicSessionState
     artifactType: container
-    artifactName: AspNetClasicSessionState
+    artifactName: AspNetClassicSessionState
