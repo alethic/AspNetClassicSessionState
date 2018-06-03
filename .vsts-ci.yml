@@ -22,7 +22,7 @@ steps:
 - task: DotNetCoreCLI@1
   inputs:
     command: msbuild
-    projects: '**\*.csproj'
+    projects: 'AspNetClasicSessionState.sln'
     arguments: '/t:Restore /p:PackageVersion=$(GitVersion.NuGetVersion) /p:Version=$(GitVersion.NuGetVersion) /p:Configuration=$(BuildConfiguration)'
 
 - task: VSBuild@1
