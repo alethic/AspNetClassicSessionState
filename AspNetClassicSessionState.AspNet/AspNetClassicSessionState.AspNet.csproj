@@ -23,8 +23,16 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AspNetClassicSessionState.Asp\AspNetClassicSessionState.Asp.vcxproj" />
-      <ProjectReference Include="..\AspNetClassicSessionState.Managed\AspNetClassicSessionState.Managed.csproj" />
+        <ProjectReference Include="..\AspNetClassicSessionState.Asp\AspNetClassicSessionState.Asp.vcxproj">
+            <IncludeAssets>All</IncludeAssets>
+            <PrivateAssets>true</PrivateAssets>
+            <OutputItemType>Content</OutputItemType>
+        </ProjectReference>
+        <ProjectReference Include="..\AspNetClassicSessionState.Managed\AspNetClassicSessionState.Managed.csproj">
+            <IncludeAssets>All</IncludeAssets>
+            <PrivateAssets>true</PrivateAssets>
+            <OutputItemType>Content</OutputItemType>
+        </ProjectReference>
     </ItemGroup>
 
     <ItemGroup>
@@ -32,5 +40,11 @@
       <Reference Include="System.EnterpriseServices" />
       <Reference Include="System.Web" />
     </ItemGroup>
+    
+    <Target Name="CopyAspLibToPackage" DependsOnTargets="ResolveReferences">
+        <ItemGroup>
+            <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')-&gt;WithMetadataValue('PrivateAssets', 'All'))" />
+        </ItemGroup>
+    </Target>
 
 </Project>
