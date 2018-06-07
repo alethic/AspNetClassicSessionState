@@ -15,7 +15,6 @@
     <Keyword>AtlProj</Keyword>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
     <TargetFrameworkVersion>4.7</TargetFrameworkVersion>
-      <DevelopmentDependency>true</DevelopmentDependency>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -30,6 +29,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -51,6 +51,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>bin\$(Configuration)\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
+    <EmbedManifest>false</EmbedManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -80,12 +83,10 @@
       <SubSystem>Windows</SubSystem>
       <ModuleDefinitionFile>.\AspNetClassicSessionState.Asp.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <RegisterOutput>true</RegisterOutput>
       <TypeLibraryFile>
       </TypeLibraryFile>
       <EnableUAC>false</EnableUAC>
     </Link>
-    <Manifest />
     <Manifest>
       <AssemblyIdentity>$(TargetName), version=1.0, type=win32, processorArchitecture=x86</AssemblyIdentity>
       <InputResourceManifests>
@@ -97,14 +98,14 @@
       </AdditionalOptions>
       <AdditionalManifestFiles>$(IntDir)$(TargetName)$(TargetExt).intermediate.manifest</AdditionalManifestFiles>
       <OutputManifestFile>$(OutDir)$(TargetName).manifest</OutputManifestFile>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
     </Manifest>
     <ManifestResourceCompile>
       <ResourceOutputFileName>
       </ResourceOutputFileName>
     </ManifestResourceCompile>
     <PostBuildEvent>
-      <Command>mt.exe -manifest $(OutDir)$(TargetName).manifest -outputresource:$(TargetPath);2
-del.exe $(OutDir)$(TargetName).manifest</Command>
+      <Command>mt.exe -manifest $(OutDir)$(TargetName).manifest -outputresource:$(TargetPath);2</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -137,8 +138,24 @@ del.exe $(OutDir)$(TargetName).manifest</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <RegisterOutput>true</RegisterOutput>
+      <EnableUAC>false</EnableUAC>
     </Link>
+    <Manifest>
+      <AssemblyIdentity>$(TargetName), version=1.0, type=win32, processorArchitecture=x86</AssemblyIdentity>
+      <AdditionalManifestFiles>$(IntDir)$(TargetName)$(TargetExt).intermediate.manifest</AdditionalManifestFiles>
+      <OutputManifestFile>$(OutDir)$(TargetName).manifest</OutputManifestFile>
+      <TypeLibraryFile>$(IntDir)AspNetClassicSessionStateAsp.tlb</TypeLibraryFile>
+      <RegistrarScriptFile>AspNetState.rgs</RegistrarScriptFile>
+      <ComponentFileName>$(TargetName)$(TargetExt)</ComponentFileName>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
+    </Manifest>
+    <ManifestResourceCompile>
+      <ResourceOutputFileName>
+      </ResourceOutputFileName>
+    </ManifestResourceCompile>
+    <PostBuildEvent>
+      <Command>mt.exe -manifest $(OutDir)$(TargetName).manifest -outputresource:$(TargetPath);2</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AspNetClassicSessionState.Asp.cpp" />
