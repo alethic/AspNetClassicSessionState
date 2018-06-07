@@ -42,7 +42,8 @@
             <TreatAsPackageReference>false</TreatAsPackageReference>
             <OutputItemType>Content</OutputItemType>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <PackageCopyToOutput>true</PackageCopyToOutput>
+            <PackageCopyToOutput>false</PackageCopyToOutput>
+            <PackagePath>include</PackagePath>
         </ProjectReference>
         <ProjectReference Include="..\AspNetClassicSessionState.Asp\AspNetClassicSessionState.Asp.vcxproj">
             <IncludeAssets>all</IncludeAssets>
@@ -50,7 +51,8 @@
             <TreatAsPackageReference>false</TreatAsPackageReference>
             <OutputItemType>Content</OutputItemType>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <PackageCopyToOutput>true</PackageCopyToOutput>
+            <PackageCopyToOutput>false</PackageCopyToOutput>
+            <PackagePath>include</PackagePath>
         </ProjectReference>
     </ItemGroup>
 
