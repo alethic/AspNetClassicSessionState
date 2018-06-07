@@ -25,13 +25,14 @@
 
     <ItemGroup>
         <ProjectReference Include="..\AspNetClassicSessionState.Asp\AspNetClassicSessionState.Asp.vcxproj">
-            <IncludeAssets>All</IncludeAssets>
-            <PrivateAssets>All</PrivateAssets>
+            <IncludeAssets>all</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
             <TreatAsPackageReference>false</TreatAsPackageReference>
+            <OutputItemType>content</OutputItemType>
         </ProjectReference>
         <ProjectReference Include="..\AspNetClassicSessionState.Managed\AspNetClassicSessionState.Managed.csproj">
-            <IncludeAssets>All</IncludeAssets>
-            <PrivateAssets>All</PrivateAssets>
+            <IncludeAssets>all</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
             <TreatAsPackageReference>false</TreatAsPackageReference>
         </ProjectReference>
     </ItemGroup>
@@ -41,11 +42,5 @@
       <Reference Include="System.EnterpriseServices" />
       <Reference Include="System.Web" />
     </ItemGroup>
-
-    <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
-        <ItemGroup>
-            <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')-&gt;WithMetadataValue('PrivateAssets', 'All'))" />
-        </ItemGroup>
-    </Target>
 
 </Project>
