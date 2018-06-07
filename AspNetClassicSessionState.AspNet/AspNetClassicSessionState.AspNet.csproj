@@ -8,6 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="build\AspNetClassicSessionState.AspNet.props" />
+    </ItemGroup>
+
+    <ItemGroup>
       <COMReference Include="ASPTypeLibrary.dll">
         <Guid>d97a6da0-a85c-11cf-83ae-00a0c90c2bd8</Guid>
         <VersionMajor>3</VersionMajor>
@@ -16,6 +20,15 @@
         <Lcid>0</Lcid>
         <Isolated>false</Isolated>
       </COMReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="build\AspNetClassicSessionState.AspNet.props">
+          <Pack>true</Pack>
+          <PackageCopyToOutput>true</PackageCopyToOutput>
+          <PackagePath>build</PackagePath>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -33,6 +46,7 @@
             <IncludeAssets>all</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
             <TreatAsPackageReference>false</TreatAsPackageReference>
+            <OutputItemType>content</OutputItemType>
         </ProjectReference>
     </ItemGroup>
 
