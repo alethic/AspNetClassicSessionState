@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace AspNetClassicSessionState.COM
+namespace AspNetClassicSessionState.Managed
 {
 
     [Guid("CB2F6722-AB3A-11D2-9C40-00C04FA30A3E")]

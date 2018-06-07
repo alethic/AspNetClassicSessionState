@@ -1,7 +1,8 @@
 ﻿using System;
+using System.EnterpriseServices;
 using System.Web;
 using System.Web.SessionState;
-
+using ASPTypeLibrary;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(
@@ -65,9 +66,6 @@ namespace AspNetClassicSessionState.AspNet
         /// <returns></returns>
         IAsyncResult BeginOnBeginRequestAsync(object sender, EventArgs args, AsyncCallback cb, object extraData)
         {
-            var r = Guid.NewGuid().ToString("N");
-            HttpContext.Current.Request.Headers.Add("ASPNETSTATEID", r);
-            AspNetStateProxy.SetContext(r, HttpContext.Current);
 
             return new CompletedAsyncResult(true);
         }
@@ -93,7 +91,7 @@ namespace AspNetClassicSessionState.AspNet
         {
             // register handler to force session state initialization
             if (HttpContext.Current.Handler == null)
-                HttpContext.Current.Handler = new EnableSessionStateHandler();
+                HttpContext.Current.Handler = new StaHttpHandlerWithSessionState();
 
             return new CompletedAsyncResult(true);
         }
@@ -117,8 +115,9 @@ namespace AspNetClassicSessionState.AspNet
         /// <returns></returns>
         IAsyncResult OnBeginAcquireRequestStateAsync(object sender, EventArgs e, AsyncCallback cb, object extraData)
         {
+
             // unmap our temporary state handler.
-            if (HttpContext.Current.Handler is EnableSessionStateHandler)
+            if (HttpContext.Current.Handler is StaHttpHandlerWithSessionState)
                 HttpContext.Current.Handler = null;
 
             return new CompletedAsyncResult(true);
@@ -143,6 +142,7 @@ namespace AspNetClassicSessionState.AspNet
         /// <returns></returns>
         IAsyncResult OnBeginPostAcquireRequestStateAsync(object sender, EventArgs args, AsyncCallback cb, object extraData)
         {
+            var request = (IRequest)ContextUtil.GetNamedProperty("Request");
             // use an environment variable to communicate Session State Module URI base between ASP.NET and ASP Classic
             var appDomainIdKey = $"{HttpRuntime.AppDomainAppId}_APPDOMAINID";
             var appDomainId = Environment.GetEnvironmentVariable(appDomainIdKey, EnvironmentVariableTarget.Process);

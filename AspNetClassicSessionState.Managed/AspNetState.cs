@@ -8,15 +8,14 @@ using System.Runtime.InteropServices;
 
 using ASPTypeLibrary;
 
-namespace AspNetClassicSessionState.COM
+namespace AspNetClassicSessionState.Managed
 {
 
-    [ComVisible(true)]
-    [Guid("4F132151-EFD8-4B12-BAD2-F86658585F02")]
-    [ClassInterface(ClassInterfaceType.None)]
-    public partial class AspNetState :
-        IAspNetState,
-        IDisposable
+    /// <summary>
+    /// Managed entry point for COM object.
+    /// </summary>
+    [Guid("FAF84558-586E-4628-BD2D-456AACE30B46")]
+    public class AspNetState : IDisposable
     {
 
         readonly Lazy<IRequest> request;

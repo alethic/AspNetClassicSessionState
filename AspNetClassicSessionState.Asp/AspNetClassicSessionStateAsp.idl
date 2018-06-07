@@ -1,0 +1,38 @@
+// AspNetClassicSessionStateAsp.idl : IDL source for AspNetClassicSessionState.Asp
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (AspNetClassicSessionStateAsp.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(7D0554E0-4D4A-4A97-A31C-71E50428DB2C),
+	dual,
+	nonextensible,	
+	pointer_default(unique)
+]
+interface IAspNetState : IDispatch
+{
+	//Standard Server Side Component Methods
+	HRESULT OnStartPage([in] IUnknown* piUnk);
+	HRESULT OnEndPage();	
+};
+[
+	uuid(7402A6CE-6609-46C2-AC49-C862CBF23FFF),
+	version(1.0),
+]
+library AspNetClassicSessionStateAspLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(07CA8934-6833-46F2-80CD-6D42B23EB7FD)		
+	]
+	coclass AspNetState
+	{
+		[default] interface IAspNetState;
+	};
+};
+
