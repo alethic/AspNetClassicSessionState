@@ -15,6 +15,7 @@
     <Keyword>AtlProj</Keyword>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
     <TargetFrameworkVersion>4.7</TargetFrameworkVersion>
+      <DevelopmentDependency>true</DevelopmentDependency>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

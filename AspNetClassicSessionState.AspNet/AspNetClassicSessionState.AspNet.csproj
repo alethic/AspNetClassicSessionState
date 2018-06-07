@@ -25,12 +25,13 @@
     <ItemGroup>
         <ProjectReference Include="..\AspNetClassicSessionState.Asp\AspNetClassicSessionState.Asp.vcxproj">
             <IncludeAssets>All</IncludeAssets>
-            <PrivateAssets>true</PrivateAssets>
+            <PrivateAssets>All</PrivateAssets>
             <OutputItemType>Content</OutputItemType>
+            <Package>false</Package>
         </ProjectReference>
         <ProjectReference Include="..\AspNetClassicSessionState.Managed\AspNetClassicSessionState.Managed.csproj">
             <IncludeAssets>All</IncludeAssets>
-            <PrivateAssets>true</PrivateAssets>
+            <PrivateAssets>All</PrivateAssets>
             <OutputItemType>Content</OutputItemType>
         </ProjectReference>
     </ItemGroup>
