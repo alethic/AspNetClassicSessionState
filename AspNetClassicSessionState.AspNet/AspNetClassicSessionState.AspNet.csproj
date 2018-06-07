@@ -43,6 +43,7 @@
             <TreatAsPackageReference>false</TreatAsPackageReference>
             <OutputItemType>Content</OutputItemType>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackageCopyToOutput>true</PackageCopyToOutput>
         </ProjectReference>
         <ProjectReference Include="..\AspNetClassicSessionState.Managed\AspNetClassicSessionState.Managed.csproj">
             <IncludeAssets>all</IncludeAssets>
@@ -50,6 +51,7 @@
             <TreatAsPackageReference>false</TreatAsPackageReference>
             <OutputItemType>Content</OutputItemType>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <PackageCopyToOutput>true</PackageCopyToOutput>
         </ProjectReference>
     </ItemGroup>
 
