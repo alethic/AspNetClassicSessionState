@@ -23,6 +23,11 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\AspNetClassicSessionState.Asp\AspNetClassicSessionState.Asp.vcxproj" />
+      <ProjectReference Include="..\AspNetClassicSessionState.Managed\AspNetClassicSessionState.Managed.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
       <Reference Include="System.Configuration" />
       <Reference Include="System.EnterpriseServices" />
       <Reference Include="System.Web" />

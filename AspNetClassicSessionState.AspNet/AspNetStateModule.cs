@@ -1,8 +1,11 @@
 ﻿using System;
-using System.EnterpriseServices;
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Runtime.Remoting;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Web;
 using System.Web.SessionState;
-using ASPTypeLibrary;
+
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(
@@ -57,6 +60,22 @@ namespace AspNetClassicSessionState.AspNet
         }
 
         /// <summary>
+        /// Serializes the ObjRef to a base64 encoded string.
+        /// </summary>
+        /// <param name="objRef"></param>
+        /// <returns></returns>
+        string SerializeObjRef(ObjRef objRef)
+        {
+            using (var stm = new MemoryStream())
+            {
+                var srs = new BinaryFormatter();
+                srs.Serialize(stm, objRef);
+                stm.Position = 0;
+                return Convert.ToBase64String(stm.ToArray());
+            }
+        }
+
+        /// <summary>
         /// Invoked when the request is beginning.
         /// </summary>
         /// <param name="sender"></param>
@@ -66,6 +85,11 @@ namespace AspNetClassicSessionState.AspNet
         /// <returns></returns>
         IAsyncResult BeginOnBeginRequestAsync(object sender, EventArgs args, AsyncCallback cb, object extraData)
         {
+            // generate a new proxy and serialize an objref to that proxy into the request headers
+            var proxy = new AspNetStateProxy(HttpContext.Current);
+            HttpContext.Current.Items["__ASPNETCLASSICPROXY"] = proxy;
+            var objRef = RemotingServices.Marshal(proxy, null, typeof(IStrongBox));
+            HttpContext.Current.Request.Headers.Add("ASPNETSTATEPROXYREF", SerializeObjRef(objRef));
 
             return new CompletedAsyncResult(true);
         }
@@ -115,7 +139,6 @@ namespace AspNetClassicSessionState.AspNet
         /// <returns></returns>
         IAsyncResult OnBeginAcquireRequestStateAsync(object sender, EventArgs e, AsyncCallback cb, object extraData)
         {
-
             // unmap our temporary state handler.
             if (HttpContext.Current.Handler is StaHttpHandlerWithSessionState)
                 HttpContext.Current.Handler = null;
@@ -142,7 +165,6 @@ namespace AspNetClassicSessionState.AspNet
         /// <returns></returns>
         IAsyncResult OnBeginPostAcquireRequestStateAsync(object sender, EventArgs args, AsyncCallback cb, object extraData)
         {
-            var request = (IRequest)ContextUtil.GetNamedProperty("Request");
             // use an environment variable to communicate Session State Module URI base between ASP.NET and ASP Classic
             var appDomainIdKey = $"{HttpRuntime.AppDomainAppId}_APPDOMAINID";
             var appDomainId = Environment.GetEnvironmentVariable(appDomainIdKey, EnvironmentVariableTarget.Process);

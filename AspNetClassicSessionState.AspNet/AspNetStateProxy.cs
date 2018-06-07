@@ -15,40 +15,29 @@ namespace AspNetClassicSessionState.AspNet
         IStrongBox
     {
 
-        static readonly HttpContextCache cache = new HttpContextCache();
-
-        /// <summary>
-        /// Gets the cached <see cref="HttpContext"/> by key.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="context"></param>
-        public static void SetContext(string key, HttpContext context) => cache.Set(key, context);
-
-        /// <summary>
-        /// Sets the cached <see cref="HttpContext"/> by key.
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public static HttpContext GetContext(string key) => cache.Get(key);
-
         /// <summary>
         /// Describes the prefix to insert before ASP.Net classic session state keys.
         /// </summary>
         public static string Prefix => ((AspNetClassicStateConfigurationSection)ConfigurationManager.GetSection("aspNetClassicSessionState"))?.Prefix ?? "ASP_";
 
-
-        /// <summary>
-        /// Key of the current proxy.
-        /// </summary>
-        readonly string key;
+        readonly WeakReference<HttpContext> context;
 
         /// <summary>
         /// Initializes a new instance.
         /// </summary>
-        /// <param name="key"></param>
-        public AspNetStateProxy(string key)
+        /// <param name="context"></param>
+        public AspNetStateProxy(HttpContext context)
         {
-            this.key = key ?? throw new ArgumentNullException(nameof(key));
+            this.context = new WeakReference<HttpContext>(context);
+        }
+
+        /// <summary>
+        /// Attempts to get the current context.
+        /// </summary>
+        /// <returns></returns>
+        HttpContext GetContext()
+        {
+            return context.TryGetTarget(out var c) ? c : null;
         }
 
         /// <summary>
@@ -58,9 +47,7 @@ namespace AspNetClassicSessionState.AspNet
         /// <param name="data"></param>
         void Push(IDictionary<string, object> items)
         {
-            var c = GetContext(key);
-            if (c == null)
-                throw new InvalidOperationException("Null HttpContext in cache. Cannot reenter ASP.Net request.");
+            var c = GetContext() ?? throw new InvalidOperationException("Null HttpContext in cache. Cannot reenter ASP.Net request.");
 
             var p = HttpContext.Current;
 
@@ -83,10 +70,7 @@ namespace AspNetClassicSessionState.AspNet
         /// <returns></returns>
         IDictionary<string, object> Pull()
         {
-            var c = GetContext(key);
-            if (c == null)
-                throw new InvalidOperationException("Null HttpContext in cache. Cannot reenter ASP.Net request.");
-
+            var c = GetContext() ?? throw new InvalidOperationException("Null HttpContext in cache. Cannot reenter ASP.Net request.");
             var p = HttpContext.Current;
 
             try

@@ -86,14 +86,25 @@
     </Link>
     <Manifest />
     <Manifest>
-      <AssemblyIdentity>$(TargetName)</AssemblyIdentity>
+      <AssemblyIdentity>$(TargetName), version=1.0, type=win32, processorArchitecture=x86</AssemblyIdentity>
       <InputResourceManifests>
       </InputResourceManifests>
-      <AdditionalManifestFiles>$(IntDir)$(TargetName)$(TargetExt).intermediate.manifest</AdditionalManifestFiles>
       <TypeLibraryFile>$(IntDir)AspNetClassicSessionStateAsp.tlb</TypeLibraryFile>
-      <ComponentFileName>$(OutDir)$(TargetName)$(TargetExt)</ComponentFileName>
-      <RegistrarScriptFile>AspNetClassicSessionState.Asp.rgs</RegistrarScriptFile>
+      <ComponentFileName>$(TargetName)$(TargetExt)</ComponentFileName>
+      <RegistrarScriptFile>AspNetState.rgs</RegistrarScriptFile>
+      <AdditionalOptions>
+      </AdditionalOptions>
+      <AdditionalManifestFiles>$(IntDir)$(TargetName)$(TargetExt).intermediate.manifest</AdditionalManifestFiles>
+      <OutputManifestFile>$(OutDir)$(TargetName).manifest</OutputManifestFile>
     </Manifest>
+    <ManifestResourceCompile>
+      <ResourceOutputFileName>
+      </ResourceOutputFileName>
+    </ManifestResourceCompile>
+    <PostBuildEvent>
+      <Command>mt.exe -manifest $(OutDir)$(TargetName).manifest -outputresource:$(TargetPath);2
+del.exe $(OutDir)$(TargetName).manifest</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>

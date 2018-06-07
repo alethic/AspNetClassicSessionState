@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asa" />
+    <Content Include="ServerVariables.asp" />
     <Content Include="test.aspx" />
     <Content Include="test.asp" />
     <Content Include="Web.config">

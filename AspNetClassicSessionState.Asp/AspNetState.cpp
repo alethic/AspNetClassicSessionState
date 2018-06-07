@@ -7,9 +7,9 @@
 // CAspNetState
 
 
-STDMETHODIMP CAspNetState::OnStartPage (IUnknown* pUnk)  
+STDMETHODIMP CAspNetState::OnStartPage(IUnknown* pUnk)
 {
-    if(!pUnk)
+    if (!pUnk)
         return E_POINTER;
 
     CComPtr<IScriptingContext> spContext;
@@ -17,19 +17,19 @@ STDMETHODIMP CAspNetState::OnStartPage (IUnknown* pUnk)
 
     // Get the IScriptingContext Interface
     hr = pUnk->QueryInterface(__uuidof(IScriptingContext), (void **)&spContext);
-    if(FAILED(hr))
+    if (FAILED(hr))
         return hr;
 
     // Get Request Object Pointer
     hr = spContext->get_Request(&m_piRequest);
-    if(FAILED(hr))
+    if (FAILED(hr))
     {
         return hr;
     }
 
     // Get Session Object Pointer
     hr = spContext->get_Session(&m_piSession);
-    if(FAILED(hr))
+    if (FAILED(hr))
     {
         m_piRequest.Release();
         return hr;
@@ -37,13 +37,13 @@ STDMETHODIMP CAspNetState::OnStartPage (IUnknown* pUnk)
 
     m_bOnStartPageCalled = TRUE;
 
-    m_state = gcnew AspNetClassicSessionState::Managed::AspNetState;
+    m_state = gcnew AspNetClassicSessionState::Managed::AspNetState();
     m_state->Load();
 
     return S_OK;
 }
 
-STDMETHODIMP CAspNetState::OnEndPage ()  
+STDMETHODIMP CAspNetState::OnEndPage()
 {
     m_bOnStartPageCalled = FALSE;
 

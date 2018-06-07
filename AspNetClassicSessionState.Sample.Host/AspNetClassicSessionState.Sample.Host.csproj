@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net47</TargetFramework>
-    <EnableComImport>true</EnableComImport>
+    <OutputType>Exe</OutputType>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <EnableCOMImport>true</EnableCOMImport>
+    <EmbedCOMManifest>true</EmbedCOMManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -29,15 +30,14 @@
 
   <ItemGroup>
     <PackageReference Include="Cogito.HostedWebCore" Version="1.1.0" />
-    <PackageReference Include="FileAndServe.MSBuild.COM" Version="0.1.0-unstable0045" />
-    <PackageReference Include="FileAndServe.MSBuild.WebImport" Version="0.1.0-unstable0045" />
+    <PackageReference Include="FileAndServe.MSBuild.COM" Version="0.1.0-unstable0047" />
+    <PackageReference Include="FileAndServe.MSBuild.WebImport" Version="0.1.0-unstable0047" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AspNetClassicSessionState.AspNet\AspNetClassicSessionState.AspNet.csproj">
       <Private>false</Private>
     </ProjectReference>
-    <ProjectReference Include="..\AspNetClassicSessionState.Asp\AspNetClassicSessionState.Asp.vcxproj" />
     <ProjectReference Include="..\AspNetClassicSessionState.Sample\AspNetClassicSessionState.Sample.csproj">
       <Private>false</Private>
     </ProjectReference>
