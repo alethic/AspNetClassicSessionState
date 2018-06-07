@@ -26,13 +26,13 @@ public:
         m_bOnStartPageCalled = FALSE;
     }
 
-DECLARE_REGISTRY_RESOURCEID(IDR_ASPNETSTATE)
+    DECLARE_REGISTRY_RESOURCEID(IDR_ASPNETSTATE)
 
 
-BEGIN_COM_MAP(CAspNetState)
-    COM_INTERFACE_ENTRY(IAspNetState)
-    COM_INTERFACE_ENTRY(IDispatch)
-END_COM_MAP()
+    BEGIN_COM_MAP(CAspNetState)
+        COM_INTERFACE_ENTRY(IAspNetState)
+        COM_INTERFACE_ENTRY(IDispatch)
+    END_COM_MAP()
 
 
     DECLARE_PROTECT_FINAL_CONSTRUCT()
@@ -47,15 +47,12 @@ END_COM_MAP()
 
     }
 
-// IAspNetState
+    // IAspNetState
 public:
-    //Active Server Pages Methods
     STDMETHOD(OnStartPage)(IUnknown* IUnk);
     STDMETHOD(OnEndPage)();
 private:
-    CComPtr<IRequest> m_piRequest;					//Request Object
-    CComPtr<ISessionObject> m_piSession;			//Session Object
-    BOOL m_bOnStartPageCalled;						//OnStartPage successful?
+    BOOL m_bOnStartPageCalled;
     gcroot<AspNetClassicSessionState::Managed::AspNetState^> m_state;
 };
 
