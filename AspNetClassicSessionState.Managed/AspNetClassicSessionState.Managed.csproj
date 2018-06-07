@@ -3,9 +3,6 @@
     <PropertyGroup>
       <TargetFramework>net47</TargetFramework>
       <EnableComExport>true</EnableComExport>
-      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-      <Authors>Jerome Haltom</Authors>
-      <Description>ASP.Net components for proxying ASP Classic Session State to ASP.Net. This package contains the ASP Classic COM object with an embedded Reg-Free manifest.</Description>
     </PropertyGroup>
 
     <ItemGroup>
