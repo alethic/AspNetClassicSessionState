@@ -41,7 +41,6 @@
             <PrivateAssets>all</PrivateAssets>
             <TreatAsPackageReference>false</TreatAsPackageReference>
             <OutputItemType>Content</OutputItemType>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <PackageCopyToOutput>false</PackageCopyToOutput>
             <PackagePath>include</PackagePath>
         </ProjectReference>
@@ -50,7 +49,6 @@
             <PrivateAssets>all</PrivateAssets>
             <TreatAsPackageReference>false</TreatAsPackageReference>
             <OutputItemType>Content</OutputItemType>
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <PackageCopyToOutput>false</PackageCopyToOutput>
             <PackagePath>include</PackagePath>
         </ProjectReference>
