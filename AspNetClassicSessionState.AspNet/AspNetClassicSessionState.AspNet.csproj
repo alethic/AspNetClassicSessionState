@@ -5,6 +5,7 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Authors>Jerome Haltom</Authors>
         <Description>ASP.Net components for proxying ASP Classic Session State to ASP.Net. These components require a COM object be made available and configured within Classic ASP.</Description>
+        <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     </PropertyGroup>
 
     <ItemGroup>
@@ -40,11 +41,11 @@
       <Reference Include="System.EnterpriseServices" />
       <Reference Include="System.Web" />
     </ItemGroup>
-    
-    <!--<Target Name="CopyAspLibToPackage" DependsOnTargets="ResolveReferences">
+
+    <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
         <ItemGroup>
             <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')-&gt;WithMetadataValue('PrivateAssets', 'All'))" />
         </ItemGroup>
-    </Target>-->
+    </Target>
 
 </Project>
