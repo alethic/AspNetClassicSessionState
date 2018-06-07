@@ -41,10 +41,10 @@
       <Reference Include="System.Web" />
     </ItemGroup>
     
-    <Target Name="CopyAspLibToPackage" DependsOnTargets="ResolveReferences">
+    <!--<Target Name="CopyAspLibToPackage" DependsOnTargets="ResolveReferences">
         <ItemGroup>
             <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')-&gt;WithMetadataValue('PrivateAssets', 'All'))" />
         </ItemGroup>
-    </Target>
+    </Target>-->
 
 </Project>
