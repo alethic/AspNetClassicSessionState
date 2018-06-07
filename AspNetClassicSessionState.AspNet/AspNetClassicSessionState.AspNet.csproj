@@ -5,7 +5,6 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Authors>Jerome Haltom</Authors>
         <Description>ASP.Net components for proxying ASP Classic Session State to ASP.Net. These components require a COM object be made available and configured within Classic ASP.</Description>
-        <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     </PropertyGroup>
 
     <ItemGroup>
