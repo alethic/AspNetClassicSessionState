@@ -36,8 +36,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\AspNetClassicSessionState.Asp\AspNetClassicSessionState.Asp.vcxproj">
-            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+        <ProjectReference Include="..\AspNetClassicSessionState.Managed\AspNetClassicSessionState.Managed.csproj">
             <IncludeAssets>all</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
             <TreatAsPackageReference>false</TreatAsPackageReference>
@@ -45,7 +44,7 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
             <PackageCopyToOutput>true</PackageCopyToOutput>
         </ProjectReference>
-        <ProjectReference Include="..\AspNetClassicSessionState.Managed\AspNetClassicSessionState.Managed.csproj">
+        <ProjectReference Include="..\AspNetClassicSessionState.Asp\AspNetClassicSessionState.Asp.vcxproj">
             <IncludeAssets>all</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
             <TreatAsPackageReference>false</TreatAsPackageReference>
