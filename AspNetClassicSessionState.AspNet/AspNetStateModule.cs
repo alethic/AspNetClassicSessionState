@@ -57,11 +57,12 @@ namespace AspNetClassicSessionState.AspNet
         string SerializeObjRef(ObjRef objRef)
         {
             using (var stm = new MemoryStream())
-            using (var cmp = new DeflateStream(stm, CompressionMode.Compress))
+            using (var cmp = new DeflateStream(stm, CompressionMode.Compress, true))
             {
                 var srs = new BinaryFormatter();
                 srs.Serialize(cmp, objRef);
                 cmp.Flush();
+                cmp.Dispose();
                 stm.Position = 0;
                 return Convert.ToBase64String(stm.ToArray());
             }
