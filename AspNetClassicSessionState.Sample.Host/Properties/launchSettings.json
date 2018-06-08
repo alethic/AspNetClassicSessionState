@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "AspNetClassicSessionState.Sample.Host": {
+      "commandName": "Project"
+    }
+  }
+}

@@ -67,7 +67,8 @@ namespace AspNetClassicSessionState.Managed
         dynamic CreateProxyWrapper()
         {
             // unique ID for the request
-            var objRefEnc = (string)((IStringList)request.ServerVariables["HTTP_ASPNETSTATEPROXYREF"])[1];
+            var variables = (IStringList)request.ServerVariables["HTTP_ASPNETSTATEPROXYREF"];
+            var objRefEnc = variables?.Count >= 1 ? (string)variables[1] : null;
             if (objRefEnc == null)
                 throw new InvalidOperationException("Unable to discover ASP.Net Remote State Proxy. Ensure the module is enabled and configuration is complete.");
 

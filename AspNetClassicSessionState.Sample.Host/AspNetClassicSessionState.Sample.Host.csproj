@@ -3,9 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net47</TargetFramework>
     <OutputType>Exe</OutputType>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
     <EnableCOMImport>true</EnableCOMImport>
-    <EmbedCOMManifest>true</EmbedCOMManifest>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -38,6 +37,8 @@
     <ProjectReference Include="..\AspNetClassicSessionState.AspNet\AspNetClassicSessionState.AspNet.csproj">
       <Private>false</Private>
     </ProjectReference>
+    <ProjectReference Include="..\AspNetClassicSessionState.Asp\AspNetClassicSessionState.Asp.vcxproj" />
+    <ProjectReference Include="..\AspNetClassicSessionState.Managed\AspNetClassicSessionState.Managed.csproj" />
     <ProjectReference Include="..\AspNetClassicSessionState.Sample\AspNetClassicSessionState.Sample.csproj">
       <Private>false</Private>
     </ProjectReference>

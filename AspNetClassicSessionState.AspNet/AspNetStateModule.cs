@@ -25,7 +25,7 @@ namespace AspNetClassicSessionState.AspNet
         /// <summary>
         /// Gets whether or not the ASP Classic session state proxy is enabled.
         /// </summary>
-        static bool IsEnabled => AspNetClassicStateConfigurationSection.DefaultSection?.Enabled ?? false;
+        static bool IsEnabled => AspNetClassicStateConfigurationSection.DefaultSection?.Enabled ?? true;
 
         /// <summary>
         /// Registers the HTTP module.

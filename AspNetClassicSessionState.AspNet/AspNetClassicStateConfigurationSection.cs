@@ -18,7 +18,7 @@ namespace AspNetClassicSessionState.AspNet
         /// <summary>
         /// Determines whether ASP Classic Session state to ASP.Net forwarding is enabled.
         /// </summary>
-        [ConfigurationProperty("enabled", DefaultValue = false)]
+        [ConfigurationProperty("enabled", DefaultValue = true)]
         public bool Enabled
         {
             get => (bool)this["enabled"];

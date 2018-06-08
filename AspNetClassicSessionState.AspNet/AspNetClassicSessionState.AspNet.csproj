@@ -43,6 +43,7 @@
             <OutputItemType>Content</OutputItemType>
             <PackageCopyToOutput>false</PackageCopyToOutput>
             <PackagePath>include</PackagePath>
+            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
         </ProjectReference>
         <ProjectReference Include="..\AspNetClassicSessionState.Asp\AspNetClassicSessionState.Asp.vcxproj">
             <IncludeAssets>all</IncludeAssets>
@@ -51,6 +52,7 @@
             <OutputItemType>Content</OutputItemType>
             <PackageCopyToOutput>false</PackageCopyToOutput>
             <PackagePath>include</PackagePath>
+            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
         </ProjectReference>
     </ItemGroup>
 
