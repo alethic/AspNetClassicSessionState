@@ -29,8 +29,8 @@
 
   <ItemGroup>
     <PackageReference Include="Cogito.HostedWebCore" Version="1.1.0" />
-    <PackageReference Include="FileAndServe.MSBuild.COM" Version="0.1.0-unstable0047" />
-    <PackageReference Include="FileAndServe.MSBuild.WebImport" Version="0.1.0-unstable0047" />
+    <PackageReference Include="FileAndServe.MSBuild.COM" Version="0.1.0-unstable0048" />
+    <PackageReference Include="FileAndServe.MSBuild.WebImport" Version="0.1.0-unstable0048" />
   </ItemGroup>
 
   <ItemGroup>
