@@ -23,6 +23,11 @@ namespace AspNetClassicSessionState.AspNet
     {
 
         /// <summary>
+        /// Gets whether or not the ASP Classic session state proxy is enabled.
+        /// </summary>
+        static bool IsEnabled => AspNetClassicStateConfigurationSection.DefaultSection?.Enabled ?? false;
+
+        /// <summary>
         /// Registers the HTTP module.
         /// </summary>
         public static void RegisterModule()
@@ -36,9 +41,12 @@ namespace AspNetClassicSessionState.AspNet
         /// <param name="context"></param>
         public void Init(HttpApplication context)
         {
-            context.AddOnBeginRequestAsync(BeginOnBeginRequestAsync, EndOnBeginRequestAsync);
-            context.AddOnMapRequestHandlerAsync(OnBeginMapRequestHandlerAsync, OnEndMapRequestHandlerAsync);
-            context.AddOnAcquireRequestStateAsync(OnBeginAcquireRequestStateAsync, OnEndAcquireRequestStateAsync);
+            if (IsEnabled)
+            {
+                context.AddOnBeginRequestAsync(BeginOnBeginRequestAsync, EndOnBeginRequestAsync);
+                context.AddOnMapRequestHandlerAsync(OnBeginMapRequestHandlerAsync, OnEndMapRequestHandlerAsync);
+                context.AddOnAcquireRequestStateAsync(OnBeginAcquireRequestStateAsync, OnEndAcquireRequestStateAsync);
+            }
         }
 
         /// <summary>

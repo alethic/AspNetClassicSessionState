@@ -18,7 +18,7 @@ namespace AspNetClassicSessionState.AspNet
         /// <summary>
         /// Describes the prefix to insert before ASP.Net classic session state keys.
         /// </summary>
-        public static string Prefix => ((AspNetClassicStateConfigurationSection)ConfigurationManager.GetSection("aspNetClassicSessionState"))?.Prefix ?? "ASP_";
+        static string Prefix => AspNetClassicStateConfigurationSection.DefaultSection?.Prefix ?? "ASP_";
 
         readonly WeakReference<HttpContext> context;
 

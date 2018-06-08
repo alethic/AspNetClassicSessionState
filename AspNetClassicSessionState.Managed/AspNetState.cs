@@ -69,7 +69,7 @@ namespace AspNetClassicSessionState.Managed
             // unique ID for the request
             var objRefEnc = (string)((IStringList)request.ServerVariables["HTTP_ASPNETSTATEPROXYREF"])[1];
             if (objRefEnc == null)
-                throw new InvalidOperationException("Unable to discover ASP.Net Remote State Proxy. Ensure registration completed.");
+                throw new InvalidOperationException("Unable to discover ASP.Net Remote State Proxy. Ensure the module is enabled and configuration is complete.");
 
             // deserialize proxy reference and connect
             using (var stm = new MemoryStream(Convert.FromBase64String(objRefEnc)))
