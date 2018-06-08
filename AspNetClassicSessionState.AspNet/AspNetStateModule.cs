@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Runtime.Remoting;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -48,9 +49,11 @@ namespace AspNetClassicSessionState.AspNet
         string SerializeObjRef(ObjRef objRef)
         {
             using (var stm = new MemoryStream())
+            using (var cmp = new DeflateStream(stm, CompressionMode.Compress))
             {
                 var srs = new BinaryFormatter();
-                srs.Serialize(stm, objRef);
+                srs.Serialize(cmp, objRef);
+                cmp.Flush();
                 stm.Position = 0;
                 return Convert.ToBase64String(stm.ToArray());
             }
@@ -114,11 +117,11 @@ namespace AspNetClassicSessionState.AspNet
         /// Invoked before the session state is acquired.
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="args"></param>
         /// <param name="cb"></param>
         /// <param name="extraData"></param>
         /// <returns></returns>
-        IAsyncResult OnBeginAcquireRequestStateAsync(object sender, EventArgs e, AsyncCallback cb, object extraData)
+        IAsyncResult OnBeginAcquireRequestStateAsync(object sender, EventArgs args, AsyncCallback cb, object extraData)
         {
             // unmap our temporary state handler.
             if (HttpContext.Current.Handler is EnableSessionStateHandler)

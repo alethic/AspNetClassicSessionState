@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -29,7 +30,7 @@ namespace AspNetClassicSessionState.Managed
         public AspNetState()
         {
             this.request = (IRequest)System.EnterpriseServices.ContextUtil.GetNamedProperty("Request");
-            this.session= (ISessionObject)System.EnterpriseServices.ContextUtil.GetNamedProperty("Session");
+            this.session = (ISessionObject)System.EnterpriseServices.ContextUtil.GetNamedProperty("Session");
             this.proxy = CreateProxyWrapper();
         }
 
@@ -71,10 +72,13 @@ namespace AspNetClassicSessionState.Managed
                 throw new InvalidOperationException("Unable to discover ASP.Net Remote State Proxy. Ensure registration completed.");
 
             // deserialize proxy reference and connect
-            var srs = new BinaryFormatter();
-            var aspNetProxy = (IStrongBox)srs.Deserialize(new MemoryStream(Convert.FromBase64String(objRefEnc)));
-
-            return new AspStateProxyWrapper(aspNetProxy);
+            using (var stm = new MemoryStream(Convert.FromBase64String(objRefEnc)))
+            using (var cmp = new DeflateStream(stm, CompressionMode.Decompress))
+            {
+                var srs = new BinaryFormatter();
+                var aspNetProxy = (IStrongBox)srs.Deserialize(cmp);
+                return new AspStateProxyWrapper(aspNetProxy);
+            }
         }
 
         /// <summary>
