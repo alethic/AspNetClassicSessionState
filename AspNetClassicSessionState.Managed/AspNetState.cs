@@ -85,7 +85,7 @@ namespace AspNetClassicSessionState.Managed
         /// <summary>
         /// Simple wrapper around remote proxy.
         /// </summary>
-        class AspStateProxyWrapper
+        class AspStateProxyWrapper : IDisposable
         {
 
             readonly IStrongBox proxy;
@@ -107,6 +107,11 @@ namespace AspNetClassicSessionState.Managed
             public Dictionary<string, object> Pull()
             {
                 return (Dictionary<string, object>)proxy.Value;
+            }
+
+            public void Dispose()
+            {
+
             }
 
         }

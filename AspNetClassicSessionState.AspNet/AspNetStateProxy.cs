@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Runtime.Remoting;
 using System.Web;
 
 namespace AspNetClassicSessionState.AspNet
@@ -12,15 +14,12 @@ namespace AspNetClassicSessionState.AspNet
     /// </summary>
     public class AspNetStateProxy :
         MarshalByRefObject,
-        IStrongBox
+        IStrongBox,
+        IDisposable
     {
 
-        /// <summary>
-        /// Describes the prefix to insert before ASP.Net classic session state keys.
-        /// </summary>
-        static string Prefix => AspNetClassicStateConfigurationSection.DefaultSection?.Prefix ?? "ASP_";
-
         readonly WeakReference<HttpContext> context;
+        bool disposed = false;
 
         /// <summary>
         /// Initializes a new instance.
@@ -47,20 +46,25 @@ namespace AspNetClassicSessionState.AspNet
         /// <param name="data"></param>
         void Push(IDictionary<string, object> items)
         {
-            var c = GetContext() ?? throw new InvalidOperationException("Null HttpContext in cache. Cannot reenter ASP.Net request.");
-
-            var p = HttpContext.Current;
+            var curr = GetContext() ?? throw new InvalidOperationException("Null HttpContext in cache. Cannot reenter ASP.Net request.");
+            var prev = HttpContext.Current;
 
             try
             {
-                HttpContext.Current = c;
+                HttpContext.Current = curr;
 
-                foreach (var kvp in items)
-                    c.Session[Prefix + kvp.Key] = kvp.Value;
+                foreach (var item in items)
+                {
+                    var type = item.Value?.GetType();
+                    if (type == null || type.IsPrimitive || type.IsValueType || !Marshal.IsComObject(item.Value))
+                        curr.Session[AspNetStateModule.Prefix + item.Key] = item.Value;
+                    else
+                        AspNetStateModule.Tracer.TraceEvent(TraceEventType.Verbose, 0, "Skipping unsupported ASP classic object type: {0}", item.Value.GetType());
+                }
             }
             finally
             {
-                HttpContext.Current = p;
+                HttpContext.Current = prev;
             }
         }
 
@@ -70,22 +74,23 @@ namespace AspNetClassicSessionState.AspNet
         /// <returns></returns>
         IDictionary<string, object> Pull()
         {
-            var c = GetContext() ?? throw new InvalidOperationException("Null HttpContext in cache. Cannot reenter ASP.Net request.");
-            var p = HttpContext.Current;
+            var curr = GetContext() ?? throw new InvalidOperationException("Null HttpContext in cache. Cannot reenter ASP.Net request.");
+            var prev = HttpContext.Current;
 
             try
             {
-                HttpContext.Current = c;
+                HttpContext.Current = curr;
 
-                var d = new Dictionary<string, object>();
-                foreach (string key in c.Session)
-                    if (key.StartsWith(Prefix))
-                        d[key.Substring(Prefix.Length)] = c.Session[key];
-                return d;
+                var dict = new Dictionary<string, object>();
+                foreach (string key in curr.Session)
+                    if (key.StartsWith(AspNetStateModule.Prefix))
+                        dict[key.Substring(AspNetStateModule.Prefix.Length)] = curr.Session[key];
+
+                return dict;
             }
             finally
             {
-                HttpContext.Current = p;
+                HttpContext.Current = prev;
             }
 
         }
@@ -97,6 +102,43 @@ namespace AspNetClassicSessionState.AspNet
         {
             get => Pull();
             set => Push((Dictionary<string, object>)value);
+        }
+
+        /// <summary>
+        /// Disposes of the instance.
+        /// </summary>
+        /// <param name="disposing"></param>
+        void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    RemotingServices.Disconnect(this);
+
+                    // attempt to remove the reference and allow the context to be free
+                    if (GetContext() is HttpContext c)
+                        c.Items[AspNetStateModule.ContextProxyItemKey] = null;
+                }
+
+                disposed = true;
+            }
+        }
+
+        /// <summary>
+        /// Disposes of the instance.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        /// <summary>
+        /// Finalizes the object.
+        /// </summary>
+        ~AspNetStateProxy()
+        {
+            Dispose(false);
         }
 
     }

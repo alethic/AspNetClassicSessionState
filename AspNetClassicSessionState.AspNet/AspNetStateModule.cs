@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.CompilerServices;
@@ -21,6 +22,10 @@ namespace AspNetClassicSessionState.AspNet
     public class AspNetStateModule :
         IHttpModule
     {
+
+        public readonly static TraceSource Tracer = new TraceSource("AspNetClassicSessionState");
+        public readonly static string Prefix = AspNetClassicStateConfigurationSection.DefaultSection?.Prefix ?? "ASP_";
+        public readonly static string ContextProxyItemKey = "__ASPNETCLASSICPROXY";
 
         /// <summary>
         /// Gets whether or not the ASP Classic session state proxy is enabled.
@@ -46,6 +51,7 @@ namespace AspNetClassicSessionState.AspNet
                 context.AddOnBeginRequestAsync(BeginOnBeginRequestAsync, EndOnBeginRequestAsync);
                 context.AddOnMapRequestHandlerAsync(OnBeginMapRequestHandlerAsync, OnEndMapRequestHandlerAsync);
                 context.AddOnAcquireRequestStateAsync(OnBeginAcquireRequestStateAsync, OnEndAcquireRequestStateAsync);
+                context.AddOnEndRequestAsync(OnBeginEndRequestAsync, OnEndEndRequestAsync);
             }
         }
 
@@ -80,7 +86,7 @@ namespace AspNetClassicSessionState.AspNet
         {
             // generate a new proxy and serialize an objref to that proxy into the request headers
             var proxy = new AspNetStateProxy(HttpContext.Current);
-            HttpContext.Current.Items["__ASPNETCLASSICPROXY"] = proxy;
+            HttpContext.Current.Items[ContextProxyItemKey] = proxy;
             var objRef = RemotingServices.Marshal(proxy, null, typeof(IStrongBox));
             HttpContext.Current.Request.Headers.Add("ASPNETSTATEPROXYREF", SerializeObjRef(objRef));
 
@@ -144,6 +150,50 @@ namespace AspNetClassicSessionState.AspNet
         /// </summary>
         /// <param name="ar"></param>
         void OnEndAcquireRequestStateAsync(IAsyncResult ar)
+        {
+
+        }
+
+        /// <summary>
+        /// Invoked after the request.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        /// <param name="cb"></param>
+        /// <param name="extraData"></param>
+        /// <returns></returns>
+        IAsyncResult OnBeginEndRequestAsync(object sender, EventArgs args, AsyncCallback cb, object extraData)
+        {
+            try
+            {
+                // last ditch effort to clean up proxy
+                if (HttpContext.Current is HttpContext c)
+                {
+                    if (c.Items.Contains(ContextProxyItemKey))
+                    {
+                        // attempt to dispose of instance
+                        var proxy = c.Items[ContextProxyItemKey] as IDisposable;
+                        if (proxy != null)
+                            proxy.Dispose();
+
+                        // remove reference to instance
+                        c.Items[ContextProxyItemKey] = null;
+                    }
+                }
+            }
+            catch
+            {
+                // ignore all exceptions, we tried our best
+            }
+
+            return new CompletedAsyncResult(true);
+        }
+
+        /// <summary>
+        /// Invoked after the request.
+        /// </summary>
+        /// <param name="ar"></param>
+        void OnEndEndRequestAsync(IAsyncResult ar)
         {
 
         }
