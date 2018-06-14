@@ -3,32 +3,29 @@
 #include "stdafx.h"
 #include "AspNetState.h"
 
-
-// CAspNetState
-
+using namespace System;
 
 STDMETHODIMP CAspNetState::OnStartPage(IUnknown* pUnk)
 {
+    AspNetClassicSessionState::Managed::AspNetState^ state;
+
     if (!pUnk)
         return E_POINTER;
 
-    m_bOnStartPageCalled = TRUE;
-
-    m_state = gcnew AspNetClassicSessionState::Managed::AspNetState();
-    m_state->Load();
+    state = gcnew AspNetClassicSessionState::Managed::AspNetState();
+    state->Load();
+    delete state;
 
     return S_OK;
 }
 
 STDMETHODIMP CAspNetState::OnEndPage()
 {
-    m_bOnStartPageCalled = FALSE;
+    AspNetClassicSessionState::Managed::AspNetState^ state;
 
-    m_state->Save();
-    delete m_state;
+    state = gcnew AspNetClassicSessionState::Managed::AspNetState();
+    state->Save();
+    delete state;
 
     return S_OK;
 }
-
-
-//hello i'm a test.

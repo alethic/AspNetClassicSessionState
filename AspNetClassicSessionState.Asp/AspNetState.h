@@ -23,7 +23,7 @@ class ATL_NO_VTABLE CAspNetState :
 public:
     CAspNetState()
     {
-        m_bOnStartPageCalled = FALSE;
+
     }
 
     DECLARE_REGISTRY_RESOURCEID(IDR_ASPNETSTATE)
@@ -52,8 +52,6 @@ public:
     STDMETHOD(OnStartPage)(IUnknown* IUnk);
     STDMETHOD(OnEndPage)();
 private:
-    BOOL m_bOnStartPageCalled;
-    gcroot<AspNetClassicSessionState::Managed::AspNetState^> m_state;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(AspNetState), CAspNetState)
