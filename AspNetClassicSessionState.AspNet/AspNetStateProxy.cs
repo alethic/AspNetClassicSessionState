@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace AspNetClassicSessionState.AspNet
@@ -16,7 +15,7 @@ namespace AspNetClassicSessionState.AspNet
         /// <summary>
         /// Reference to the saved ASP state.
         /// </summary>
-        public Dictionary<string, object> State { get; set; }
+        public byte[] State { get; set; }
 
     }
 

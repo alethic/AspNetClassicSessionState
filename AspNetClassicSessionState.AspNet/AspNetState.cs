@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-
+using System.Runtime.Serialization.Formatters.Binary;
 using ASPTypeLibrary;
 
 namespace AspNetClassicSessionState.AspNet
@@ -32,7 +33,8 @@ namespace AspNetClassicSessionState.AspNet
             // attempt to load the AppDomain proxy
             proxy = GetProxy();
 
-            var state = (Dictionary<string, object>)proxy.State;
+            // deserialize from transfer format
+            var state = (Dictionary<string, object>)new BinaryFormatter().Deserialize(new MemoryStream(proxy.State));
 
             // copy session items from ASP.NET to ASP
             foreach (var kvp in state)
@@ -49,8 +51,12 @@ namespace AspNetClassicSessionState.AspNet
         /// </summary>
         public void OnEndPage()
         {
-            // copy session items from ASP to ASP.Net
-            proxy.State = session.Contents.OfType<string>().ToDictionary(i => i, i => session[i]);
+            // serialize to transfer format
+            var m = new MemoryStream();
+            new BinaryFormatter().Serialize(m, session.Contents.OfType<string>().ToDictionary(i => i, i => session[i]));
+
+            // transfer to ASP.Net
+            proxy.State = m.ToArray();
 
             // early release of proxy
             Marshal.ReleaseComObject(proxy);

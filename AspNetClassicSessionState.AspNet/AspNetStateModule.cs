@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Web;
 using System.Web.SessionState;
 
@@ -125,19 +127,17 @@ namespace AspNetClassicSessionState.AspNet
         /// </summary>
         /// <param name="state"></param>
         /// <returns></returns>
-        Dictionary<string, object> SaveForAsp(HttpSessionState state)
+        byte[] SaveForAsp(HttpSessionState state)
         {
-            var d = new Dictionary<string, object>();
+            // transform to ASP format
+            var d = state.Cast<string>().ToDictionary(i => i.StartsWith("ASP:") ? i.Substring("ASP:".Length) : "ASPNET:" + i, i => state[i]);
 
-            foreach (string key in state)
-            {
-                if (key.StartsWith("ASP:"))
-                    d[key.Substring("ASP:".Length)] = state[key];
-                else
-                    d["ASPNET:" + key] = state[key];
-            }
+            // serialize to binary stream
+            var m = new MemoryStream();
+            var s = new BinaryFormatter();
+            s.Serialize(m, d);
 
-            return d;
+            return m.ToArray();
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace AspNetClassicSessionState.AspNet
             {
                 // copy session state from proxy
                 var proxy = (AspNetStateProxy)context.Items[ContextProxyPtrKey];
-                var state = LoadFromAsp(proxy.State).ToDictionary(i => i.Key, i => i.Value);
+                var state = LoadFromAsp(proxy.State);
 
                 // apply new values
                 foreach (var kvp in state)
@@ -187,21 +187,18 @@ namespace AspNetClassicSessionState.AspNet
         /// <summary>
         /// Returns an enumeration of key value pair as the state should be communicated to ASP.
         /// </summary>
-        /// <param name="state"></param>
+        /// <param name="buffer"></param>
         /// <returns></returns>
-        Dictionary<string, object> LoadFromAsp(Dictionary<string, object> state)
+        Dictionary<string, object> LoadFromAsp(byte[] buffer)
         {
-            var dict = new Dictionary<string, object>();
+            // deserialize incoming data
+            var serializer = new BinaryFormatter();
+            var s = (Dictionary<string, object>)serializer.Deserialize(new MemoryStream(buffer));
 
-            foreach (var kvp in state)
-            {
-                if (kvp.Key.StartsWith("ASPNET:"))
-                    dict[kvp.Key.Substring("ASPNET:".Length)] = kvp.Value;
-                else
-                    dict["ASP:" + kvp.Key] = kvp.Value;
-            }
+            // transform from ASP format to ASP.Net format
+            var d = s.ToDictionary(i => i.Key.StartsWith("ASPNET:") ? i.Key.Substring("ASPNET:".Length) : "ASP:" + i.Key, i => i.Value);
 
-            return dict;
+            return d;
         }
 
         /// <summary>
