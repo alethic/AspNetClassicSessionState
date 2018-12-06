@@ -25,6 +25,7 @@ namespace AspNetClassicSessionState.AspNet
 
         public static readonly string ContextProxyPtrKey = "__ASPNETCLASSICPROXY";
         public static readonly string HeadersProxyPtrKey = "ASPNETSTATEPROXYREF";
+        public static readonly string AspVarPrefix = "ASP::";
 
         /// <summary>
         /// Gets whether or not the ASP Classic session state proxy is enabled.
@@ -130,7 +131,9 @@ namespace AspNetClassicSessionState.AspNet
         byte[] SaveForAsp(HttpSessionState state)
         {
             // transform to ASP format
-            var s = state.Cast<string>().Where(i => i.StartsWith("ASP::")).ToDictionary(i => i.Substring("ASP::".Length), i => state[i]);
+            var s = state.Cast<string>()
+                .Where(i => i.StartsWith(AspVarPrefix))
+                .ToDictionary(i => i.Substring(AspVarPrefix.Length), i => state[i]);
 
             // serialize to binary stream
             var m = new MemoryStream();
@@ -176,8 +179,9 @@ namespace AspNetClassicSessionState.AspNet
                     context.Session[kvp.Key] = kvp.Value;
 
                 // remove missing values
-                foreach (var key in context.Session.Keys.Cast<string>().Where(i => i.StartsWith("ASP::")).ToList())
-                    if (state.ContainsKey(key.Substring("ASP::".Length)) == false)
+                var ready = context.Session.Keys.Cast<string>().Where(i => i.StartsWith(AspVarPrefix)).ToList();
+                foreach (var key in ready)
+                    if (state.ContainsKey(key.Substring(AspVarPrefix.Length)) == false)
                         context.Session.Remove(key);
             }
 
