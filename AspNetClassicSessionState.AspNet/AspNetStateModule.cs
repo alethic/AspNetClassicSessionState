@@ -176,8 +176,8 @@ namespace AspNetClassicSessionState.AspNet
                     context.Session[kvp.Key] = kvp.Value;
 
                 // remove missing values
-                foreach (var key in context.Session.Keys.Cast<string>().ToList())
-                    if (state.ContainsKey(key) == false)
+                foreach (var key in context.Session.Keys.Cast<string>().Where(i => i.StartsWith("ASP::")).ToList())
+                    if (state.ContainsKey(key.Substring("ASP::".Length)) == false)
                         context.Session.Remove(key);
             }
 
