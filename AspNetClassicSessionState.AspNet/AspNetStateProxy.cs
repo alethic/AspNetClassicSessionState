@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Web;
 
@@ -74,6 +75,7 @@ namespace AspNetClassicSessionState.AspNet
             {
                 HttpContext.Current = cntx;
 
+                // copy ASP session items to ASP.Net session
                 foreach (var item in items)
                 {
                     var type = item.Value?.GetType();
@@ -82,6 +84,11 @@ namespace AspNetClassicSessionState.AspNet
                     else
                         AspNetStateModule.Tracer.TraceEvent(TraceEventType.Verbose, 0, "Skipping unsupported ASP classic object type: {0}", item.Value.GetType());
                 }
+
+                // remove ASP session items that are no longer within collection
+                foreach (var key in cntx.Session.Keys.Cast<string>().ToList())
+                    if (key.StartsWith(AspNetStateModule.Prefix) && items.ContainsKey(key.Substring(AspNetStateModule.Prefix.Length)) == false)
+                        cntx.Session.Remove(key);
             }
             finally
             {
