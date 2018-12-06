@@ -56,6 +56,14 @@ namespace AspNetClassicSessionState.AspNet
         }
 
         /// <summary>
+        /// Returns true if the given page is an ASP page.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        bool IsAspPage(HttpContext context) =>
+            string.Equals(context.Request.CurrentExecutionFilePathExtension, ".asp", StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>
         /// Invoked when the request is beginning.
         /// </summary>
         /// <param name="sender"></param>
@@ -71,7 +79,7 @@ namespace AspNetClassicSessionState.AspNet
                 return new CompletedAsyncResult(true);
 
             // only generate for classic ASP requests
-            if (context.Request.CurrentExecutionFilePathExtension == ".asp")
+            if (IsAspPage(context))
             {
                 // session state is always required
                 context.SetSessionStateBehavior(SessionStateBehavior.Required);
@@ -113,7 +121,7 @@ namespace AspNetClassicSessionState.AspNet
                 return new CompletedAsyncResult(true);
 
             // only generate for classic ASP requests
-            if (context.Request.CurrentExecutionFilePathExtension == ".asp")
+            if (IsAspPage(context))
             {
                 // copy session state into proxy
                 var proxy = (AspNetStateProxy)context.Items[ContextProxyPtrKey];
@@ -168,7 +176,7 @@ namespace AspNetClassicSessionState.AspNet
                 return new CompletedAsyncResult(true);
 
             // only generate for classic ASP requests
-            if (context.Request.CurrentExecutionFilePathExtension == ".asp")
+            if (IsAspPage(context))
             {
                 // copy session state from proxy
                 var proxy = (AspNetStateProxy)context.Items[ContextProxyPtrKey];
@@ -181,7 +189,7 @@ namespace AspNetClassicSessionState.AspNet
                 // remove missing values
                 var ready = context.Session.Keys.Cast<string>().Where(i => i.StartsWith(AspVarPrefix)).ToList();
                 foreach (var key in ready)
-                    if (state.ContainsKey(key.Substring(AspVarPrefix.Length)) == false)
+                    if (state.ContainsKey(key) == false)
                         context.Session.Remove(key);
             }
 
@@ -200,7 +208,7 @@ namespace AspNetClassicSessionState.AspNet
             var s = (Dictionary<string, object>)f.Deserialize(new MemoryStream(buffer));
 
             // transform from ASP format to ASP.Net format
-            var d = s.ToDictionary(i => "ASP::" + i.Key, i => i.Value);
+            var d = s.ToDictionary(i => AspVarPrefix + i.Key, i => i.Value);
 
             return d;
         }
