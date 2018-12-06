@@ -16,6 +16,7 @@
         <WrapperTool>tlbimp</WrapperTool>
         <Lcid>0</Lcid>
         <Isolated>false</Isolated>
+        <EmbedInteropTypes>true</EmbedInteropTypes>
       </COMReference>
     </ItemGroup>
 
