@@ -51,10 +51,15 @@ namespace AspNetClassicSessionState.AspNet
         /// </summary>
         public void OnEndPage()
         {
+            // copy compatible items to new dictionary
+            var d = new Dictionary<string, object>();
+            foreach (var key in session.Contents.OfType<string>())
+                d[key] = session[key];
+
             // serialize to transfer format
             var m = new MemoryStream();
             var f = new BinaryFormatter();
-            f.Serialize(m, session.Contents.OfType<string>().ToDictionary(i => i, i => session[i]));
+            f.Serialize(m, d);
 
             // transfer to ASP.Net
             proxy.State = m.ToArray();
