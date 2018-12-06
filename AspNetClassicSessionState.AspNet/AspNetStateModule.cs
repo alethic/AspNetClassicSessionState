@@ -106,9 +106,13 @@ namespace AspNetClassicSessionState.AspNet
             if (context == null)
                 return new CompletedAsyncResult(true);
 
-            // register handler to force session state initialization
-            if (context.Handler == null)
-                context.Handler = new EnableSessionStateHandler();
+            // only generate for classic ASP requests
+            if (context.Request.CurrentExecutionFilePathExtension == ".asp")
+            {
+                // register handler to force session state initialization
+                if (context.Handler == null)
+                    context.Handler = new EnableSessionStateHandler();
+            }
 
             return new CompletedAsyncResult(true);
         }
@@ -137,9 +141,13 @@ namespace AspNetClassicSessionState.AspNet
             if (context == null)
                 return new CompletedAsyncResult(true);
 
-            // unmap our temporary state handler.
-            if (context.Handler is EnableSessionStateHandler)
-                context.Handler = null;
+            // only generate for classic ASP requests
+            if (context.Request.CurrentExecutionFilePathExtension == ".asp")
+            {
+                // unmap our temporary state handler.
+                if (context.Handler is EnableSessionStateHandler)
+                    context.Handler = null;
+            }
 
             return new CompletedAsyncResult(true);
         }
@@ -168,39 +176,43 @@ namespace AspNetClassicSessionState.AspNet
             if (context == null)
                 return new CompletedAsyncResult(true);
 
-            try
+            // only generate for classic ASP requests
+            if (context.Request.CurrentExecutionFilePathExtension == ".asp")
             {
-                // last ditch effort to clean up proxy
-                if (context.Items.Contains(ContextProxyPtrKey))
+                try
                 {
-                    // attempt to dispose of instance
-                    if (context.Items[ContextProxyPtrKey] is IDisposable proxy)
-                        proxy.Dispose();
+                    // last ditch effort to clean up proxy
+                    if (context.Items.Contains(ContextProxyPtrKey))
+                    {
+                        // attempt to dispose of instance
+                        if (context.Items[ContextProxyPtrKey] is IDisposable proxy)
+                            proxy.Dispose();
 
-                    // remove reference to instance
-                    context.Items[ContextProxyPtrKey] = null;
+                        // remove reference to instance
+                        context.Items[ContextProxyPtrKey] = null;
+                    }
                 }
-            }
-            catch
-            {
-                // ignore all exceptions, we tried our best
-            }
-
-            try
-            {
-                if (context.Request.Headers[HeadersProxyPtrKey] is string iunkPtrTxt && long.TryParse(iunkPtrTxt, out var iunkPtrL))
+                catch
                 {
-                    // pointer in headers represents a reference to object, release
-                    var iunkPtr = new IntPtr(iunkPtrL);
-                    if (iunkPtr != IntPtr.Zero)
-                        Marshal.Release(iunkPtr);
-
-                    context.Request.Headers[HeadersProxyPtrKey] = null;
+                    // ignore all exceptions, we tried our best
                 }
-            }
-            catch
-            {
-                // ignore all exceptions, we tried our best
+
+                try
+                {
+                    if (context.Request.Headers[HeadersProxyPtrKey] is string iunkPtrTxt && long.TryParse(iunkPtrTxt, out var iunkPtrL))
+                    {
+                        // pointer in headers represents a reference to object, release
+                        var iunkPtr = new IntPtr(iunkPtrL);
+                        if (iunkPtr != IntPtr.Zero)
+                            Marshal.Release(iunkPtr);
+
+                        context.Request.Headers[HeadersProxyPtrKey] = null;
+                    }
+                }
+                catch
+                {
+                    // ignore all exceptions, we tried our best
+                }
             }
 
             return new CompletedAsyncResult(true);
