@@ -6,7 +6,7 @@
 <body>
 
     <%
-'        Dim AspNetState
+        Dim AspNetState
         Set AspNetState = Server.CreateObject("AspNetClassicSessionState.AspNetState")
 
         Response.Write "ASP.NET Variable: "

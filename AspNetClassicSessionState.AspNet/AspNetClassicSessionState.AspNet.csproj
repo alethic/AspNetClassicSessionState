@@ -1,15 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net47</TargetFramework>
+        <TargetFramework>net46</TargetFramework>
+        <EnableComExport>true</EnableComExport>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Authors>Jerome Haltom</Authors>
         <Description>ASP.Net components for proxying ASP Classic Session State to ASP.Net. These components require a COM object be made available and configured within Classic ASP.</Description>
     </PropertyGroup>
-
-    <ItemGroup>
-      <None Remove="build\AspNetClassicSessionState.AspNet.props" />
-    </ItemGroup>
 
     <ItemGroup>
       <COMReference Include="ASPTypeLibrary.dll">
@@ -23,37 +20,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="build\AspNetClassicSessionState.AspNet.props">
-          <Pack>true</Pack>
-          <PackageCopyToOutput>true</PackageCopyToOutput>
-          <PackagePath>build</PackagePath>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
-    <ItemGroup>
+      <PackageReference Include="Cogito.COM.MsBuild" Version="0.1.0-alpha0007" />
+      <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
       <PackageReference Include="WebActivatorEx" Version="2.2.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\AspNetClassicSessionState.Managed\AspNetClassicSessionState.Managed.csproj">
-            <IncludeAssets>all</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-            <TreatAsPackageReference>false</TreatAsPackageReference>
-            <OutputItemType>Content</OutputItemType>
-            <PackageCopyToOutput>false</PackageCopyToOutput>
-            <PackagePath>include</PackagePath>
-            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-        </ProjectReference>
-        <ProjectReference Include="..\AspNetClassicSessionState.Asp\AspNetClassicSessionState.Asp.vcxproj">
-            <IncludeAssets>all</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-            <TreatAsPackageReference>false</TreatAsPackageReference>
-            <OutputItemType>Content</OutputItemType>
-            <PackageCopyToOutput>false</PackageCopyToOutput>
-            <PackagePath>include</PackagePath>
-            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-        </ProjectReference>
     </ItemGroup>
 
     <ItemGroup>

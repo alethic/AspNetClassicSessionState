@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
-using System.IO.Compression;
-using System.Runtime.CompilerServices;
-using System.Runtime.Remoting;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.InteropServices;
 using System.Web;
 
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
@@ -23,9 +19,10 @@ namespace AspNetClassicSessionState.AspNet
         IHttpModule
     {
 
-        public readonly static TraceSource Tracer = new TraceSource("AspNetClassicSessionState");
-        public readonly static string Prefix = AspNetClassicStateConfigurationSection.DefaultSection?.Prefix ?? "ASP_";
-        public readonly static string ContextProxyItemKey = "__ASPNETCLASSICPROXY";
+        public static readonly TraceSource Tracer = new TraceSource("AspNetClassicSessionState");
+        public static readonly string Prefix = AspNetClassicStateConfigurationSection.DefaultSection?.Prefix ?? "ASP_";
+        public static readonly string ContextProxyPtrKey = "__ASPNETCLASSICPROXY";
+        public static readonly string HeadersProxyPtrKey = "ASPNETSTATEPROXYREF";
 
         /// <summary>
         /// Gets whether or not the ASP Classic session state proxy is enabled.
@@ -56,25 +53,6 @@ namespace AspNetClassicSessionState.AspNet
         }
 
         /// <summary>
-        /// Serializes the ObjRef to a base64 encoded string.
-        /// </summary>
-        /// <param name="objRef"></param>
-        /// <returns></returns>
-        string SerializeObjRef(ObjRef objRef)
-        {
-            using (var stm = new MemoryStream())
-            using (var cmp = new DeflateStream(stm, CompressionMode.Compress, true))
-            {
-                var srs = new BinaryFormatter();
-                srs.Serialize(cmp, objRef);
-                cmp.Flush();
-                cmp.Dispose();
-                stm.Position = 0;
-                return Convert.ToBase64String(stm.ToArray());
-            }
-        }
-
-        /// <summary>
         /// Invoked when the request is beginning.
         /// </summary>
         /// <param name="sender"></param>
@@ -84,11 +62,22 @@ namespace AspNetClassicSessionState.AspNet
         /// <returns></returns>
         IAsyncResult BeginOnBeginRequestAsync(object sender, EventArgs args, AsyncCallback cb, object extraData)
         {
-            // generate a new proxy and serialize an objref to that proxy into the request headers
-            var proxy = new AspNetStateProxy(HttpContext.Current);
-            HttpContext.Current.Items[ContextProxyItemKey] = proxy;
-            var objRef = RemotingServices.Marshal(proxy, null, typeof(IStrongBox));
-            HttpContext.Current.Request.Headers.Add("ASPNETSTATEPROXYREF", SerializeObjRef(objRef));
+            // ignore spurious calls
+            var context = HttpContext.Current;
+            if (context == null)
+                return new CompletedAsyncResult(true);
+
+            // only generate for classic ASP requests
+            if (context.Request.CurrentExecutionFilePathExtension == ".asp")
+            {
+                // store reference to proxy in context for keep alive
+                var proxy = new AspNetStateProxy(HttpContext.Current);
+                HttpContext.Current.Items[ContextProxyPtrKey] = proxy;
+
+                // generate CCW for proxy and add to server variables
+                var iukwn = Marshal.GetIUnknownForObject(proxy);
+                HttpContext.Current.Request.Headers.Add(HeadersProxyPtrKey, iukwn.ToString());
+            }
 
             return new CompletedAsyncResult(true);
         }
@@ -112,9 +101,14 @@ namespace AspNetClassicSessionState.AspNet
         /// <returns></returns>
         IAsyncResult OnBeginMapRequestHandlerAsync(object sender, EventArgs args, AsyncCallback cb, object extraData)
         {
+            // ignore spurious calls
+            var context = HttpContext.Current;
+            if (context == null)
+                return new CompletedAsyncResult(true);
+
             // register handler to force session state initialization
-            if (HttpContext.Current.Handler == null)
-                HttpContext.Current.Handler = new EnableSessionStateHandler();
+            if (context.Handler == null)
+                context.Handler = new EnableSessionStateHandler();
 
             return new CompletedAsyncResult(true);
         }
@@ -138,9 +132,14 @@ namespace AspNetClassicSessionState.AspNet
         /// <returns></returns>
         IAsyncResult OnBeginAcquireRequestStateAsync(object sender, EventArgs args, AsyncCallback cb, object extraData)
         {
+            // ignore spurious calls
+            var context = HttpContext.Current;
+            if (context == null)
+                return new CompletedAsyncResult(true);
+
             // unmap our temporary state handler.
-            if (HttpContext.Current.Handler is EnableSessionStateHandler)
-                HttpContext.Current.Handler = null;
+            if (context.Handler is EnableSessionStateHandler)
+                context.Handler = null;
 
             return new CompletedAsyncResult(true);
         }
@@ -164,21 +163,39 @@ namespace AspNetClassicSessionState.AspNet
         /// <returns></returns>
         IAsyncResult OnBeginEndRequestAsync(object sender, EventArgs args, AsyncCallback cb, object extraData)
         {
+            // ignore spurious calls
+            var context = HttpContext.Current;
+            if (context == null)
+                return new CompletedAsyncResult(true);
+
             try
             {
                 // last ditch effort to clean up proxy
-                if (HttpContext.Current is HttpContext c)
+                if (context.Items.Contains(ContextProxyPtrKey))
                 {
-                    if (c.Items.Contains(ContextProxyItemKey))
-                    {
-                        // attempt to dispose of instance
-                        var proxy = c.Items[ContextProxyItemKey] as IDisposable;
-                        if (proxy != null)
-                            proxy.Dispose();
+                    // attempt to dispose of instance
+                    if (context.Items[ContextProxyPtrKey] is IDisposable proxy)
+                        proxy.Dispose();
 
-                        // remove reference to instance
-                        c.Items[ContextProxyItemKey] = null;
-                    }
+                    // remove reference to instance
+                    context.Items[ContextProxyPtrKey] = null;
+                }
+            }
+            catch
+            {
+                // ignore all exceptions, we tried our best
+            }
+
+            try
+            {
+                if (context.Request.Headers[HeadersProxyPtrKey] is string iunkPtrTxt && long.TryParse(iunkPtrTxt, out var iunkPtrL))
+                {
+                    // pointer in headers represents a reference to object, release
+                    var iunkPtr = new IntPtr(iunkPtrL);
+                    if (iunkPtr != IntPtr.Zero)
+                        Marshal.Release(iunkPtr);
+
+                    context.Request.Headers[HeadersProxyPtrKey] = null;
                 }
             }
             catch

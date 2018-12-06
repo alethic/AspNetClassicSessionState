@@ -7,7 +7,7 @@ namespace AspNetClassicSessionState.AspNet
     /// <summary>
     /// Immediately completed <see cref="IAsyncResult"/>.
     /// </summary>
-    public class CompletedAsyncResult : 
+    class CompletedAsyncResult : 
         IAsyncResult
     {
 
