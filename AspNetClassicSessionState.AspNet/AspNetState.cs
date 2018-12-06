@@ -53,7 +53,8 @@ namespace AspNetClassicSessionState.AspNet
         {
             // serialize to transfer format
             var m = new MemoryStream();
-            new BinaryFormatter().Serialize(m, session.Contents.OfType<string>().ToDictionary(i => i, i => session[i]));
+            var f = new BinaryFormatter();
+            f.Serialize(m, session.Contents.OfType<string>().ToDictionary(i => i, i => session[i]));
 
             // transfer to ASP.Net
             proxy.State = m.ToArray();
