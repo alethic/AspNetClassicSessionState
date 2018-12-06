@@ -179,23 +179,7 @@ namespace AspNetClassicSessionState.AspNet
             // only generate for classic ASP requests
             if (context.Request.CurrentExecutionFilePathExtension == ".asp")
             {
-                try
-                {
-                    // last ditch effort to clean up proxy
-                    if (context.Items.Contains(ContextProxyPtrKey))
-                    {
-                        // attempt to dispose of instance
-                        if (context.Items[ContextProxyPtrKey] is IDisposable proxy)
-                            proxy.Dispose();
-
-                        // remove reference to instance
-                        context.Items[ContextProxyPtrKey] = null;
-                    }
-                }
-                catch
-                {
-                    // ignore all exceptions, we tried our best
-                }
+                context.Items[ContextProxyPtrKey] = null;
 
                 try
                 {
@@ -206,7 +190,8 @@ namespace AspNetClassicSessionState.AspNet
                         if (iunkPtr != IntPtr.Zero)
                             Marshal.Release(iunkPtr);
 
-                        context.Request.Headers[HeadersProxyPtrKey] = null;
+                        // remove header
+                        context.Request.Headers.Remove(HeadersProxyPtrKey);
                     }
                 }
                 catch

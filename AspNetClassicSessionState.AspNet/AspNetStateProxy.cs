@@ -13,11 +13,10 @@ namespace AspNetClassicSessionState.AspNet
     /// </summary>
     [Guid("E3A70CB0-FA23-4123-8BE3-01F85343441F")]
     [ComVisible(true)]
-    public class AspNetStateProxy : IDisposable
+    public class AspNetStateProxy
     {
 
         readonly WeakReference<HttpContext> context;
-        bool disposed = false;
 
         /// <summary>
         /// Initializes a new instance.
@@ -94,38 +93,6 @@ namespace AspNetClassicSessionState.AspNet
             {
                 HttpContext.Current = prev;
             }
-        }
-
-        /// <summary>
-        /// Disposes of the instance.
-        /// </summary>
-        /// <param name="disposing"></param>
-        void Dispose(bool disposing)
-        {
-            if (!disposed)
-            {
-                if (disposing)
-                    if (Context is HttpContext c)
-                        c.Items[AspNetStateModule.ContextProxyPtrKey] = null;
-
-                disposed = true;
-            }
-        }
-
-        /// <summary>
-        /// Disposes of the instance.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        /// <summary>
-        /// Finalizes the object.
-        /// </summary>
-        ~AspNetStateProxy()
-        {
-            Dispose(false);
         }
 
     }
