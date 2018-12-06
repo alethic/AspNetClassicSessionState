@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 using ASPTypeLibrary;
@@ -31,11 +32,16 @@ namespace AspNetClassicSessionState.AspNet
             // attempt to load the AppDomain proxy
             proxy = GetProxy();
 
-            var state = (Dictionary<string, object>)proxy.Load();
+            var state = (Dictionary<string, object>)proxy.State;
 
             // copy session items from ASP.NET to ASP
             foreach (var kvp in state)
                 session[kvp.Key] = kvp.Value;
+
+            // remove items no longer present
+            foreach (var key in session.Contents.OfType<string>().ToList())
+                if (state.ContainsKey(key) == false)
+                    session.Contents.Remove(key);
         }
 
         /// <summary>
@@ -43,15 +49,11 @@ namespace AspNetClassicSessionState.AspNet
         /// </summary>
         public void OnEndPage()
         {
-            var state = new Dictionary<string, object>();
-            foreach (string key in session.Contents)
-                state[key] = session.Contents[key];
-
             // copy session items from ASP to ASP.Net
-            proxy.Save(state);
+            proxy.State = session.Contents.OfType<string>().ToDictionary(i => i, i => session[i]);
 
-            // final release of RCW
-            Marshal.FinalReleaseComObject(proxy);
+            // early release of proxy
+            Marshal.ReleaseComObject(proxy);
             proxy = null;
         }
 
@@ -62,7 +64,7 @@ namespace AspNetClassicSessionState.AspNet
         dynamic GetProxy()
         {
             // unique ID for the request
-            var variables = (IStringList)request.ServerVariables["HTTP_ASPNETSTATEPROXYREF"];
+            var variables = (IStringList)request.ServerVariables[$"HTTP_{AspNetStateModule.HeadersProxyPtrKey}"];
             var intPtrStr = variables?.Count >= 1 ? (string)variables[1] : null;
             if (intPtrStr == null)
                 throw new InvalidOperationException("Unable to discover ASP.Net Remote State Proxy CCW. Ensure the module is enabled and configuration is complete.");

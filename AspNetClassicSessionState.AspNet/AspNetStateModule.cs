@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Web;
+using System.Web.SessionState;
 
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
@@ -19,8 +21,6 @@ namespace AspNetClassicSessionState.AspNet
         IHttpModule
     {
 
-        public static readonly TraceSource Tracer = new TraceSource("AspNetClassicSessionState");
-        public static readonly string Prefix = AspNetClassicStateConfigurationSection.DefaultSection?.Prefix ?? "ASP_";
         public static readonly string ContextProxyPtrKey = "__ASPNETCLASSICPROXY";
         public static readonly string HeadersProxyPtrKey = "ASPNETSTATEPROXYREF";
 
@@ -46,8 +46,8 @@ namespace AspNetClassicSessionState.AspNet
             if (IsEnabled)
             {
                 context.AddOnBeginRequestAsync(BeginOnBeginRequestAsync, EndOnBeginRequestAsync);
-                context.AddOnMapRequestHandlerAsync(OnBeginMapRequestHandlerAsync, OnEndMapRequestHandlerAsync);
-                context.AddOnAcquireRequestStateAsync(OnBeginAcquireRequestStateAsync, OnEndAcquireRequestStateAsync);
+                context.AddOnPostAcquireRequestStateAsync(OnBeginPostAcquireRequestStateAsync, OnEndPostAcquireRequestStateAsync);
+                context.AddOnPostRequestHandlerExecuteAsync(OnBeginPostRequestHandlerExecuteAsync, OnEndPostRequestHandlerExecuteAsync);
                 context.AddOnEndRequestAsync(OnBeginEndRequestAsync, OnEndEndRequestAsync);
             }
         }
@@ -70,8 +70,11 @@ namespace AspNetClassicSessionState.AspNet
             // only generate for classic ASP requests
             if (context.Request.CurrentExecutionFilePathExtension == ".asp")
             {
+                // session state is always required
+                context.SetSessionStateBehavior(SessionStateBehavior.Required);
+
                 // store reference to proxy in context for keep alive
-                var proxy = new AspNetStateProxy(HttpContext.Current);
+                var proxy = new AspNetStateProxy();
                 HttpContext.Current.Items[ContextProxyPtrKey] = proxy;
 
                 // generate CCW for proxy and add to server variables
@@ -92,14 +95,14 @@ namespace AspNetClassicSessionState.AspNet
         }
 
         /// <summary>
-        /// Invoked before the handler is mapped.
+        /// Invoked after the session state is acquired.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
         /// <param name="cb"></param>
         /// <param name="extraData"></param>
         /// <returns></returns>
-        IAsyncResult OnBeginMapRequestHandlerAsync(object sender, EventArgs args, AsyncCallback cb, object extraData)
+        IAsyncResult OnBeginPostAcquireRequestStateAsync(object sender, EventArgs args, AsyncCallback cb, object extraData)
         {
             // ignore spurious calls
             var context = HttpContext.Current;
@@ -109,32 +112,52 @@ namespace AspNetClassicSessionState.AspNet
             // only generate for classic ASP requests
             if (context.Request.CurrentExecutionFilePathExtension == ".asp")
             {
-                // register handler to force session state initialization
-                if (context.Handler == null)
-                    context.Handler = new EnableSessionStateHandler();
+                // copy session state into proxy
+                var proxy = (AspNetStateProxy)context.Items[ContextProxyPtrKey];
+                proxy.State = SaveForAsp(context.Session);
             }
 
             return new CompletedAsyncResult(true);
         }
 
         /// <summary>
-        /// Invoked before the handler is mapped.
+        /// Returns an enumeration of key value pair as the state should be communicated to ASP.
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        Dictionary<string, object> SaveForAsp(HttpSessionState state)
+        {
+            var d = new Dictionary<string, object>();
+
+            foreach (string key in state)
+            {
+                if (key.StartsWith("ASP:"))
+                    d[key.Substring("ASP:".Length)] = state[key];
+                else
+                    d["ASPNET:" + key] = state[key];
+            }
+
+            return d;
+        }
+
+        /// <summary>
+        /// Invoked after the session state is acquired.
         /// </summary>
         /// <param name="ar"></param>
-        void OnEndMapRequestHandlerAsync(IAsyncResult ar)
+        void OnEndPostAcquireRequestStateAsync(IAsyncResult ar)
         {
 
         }
 
         /// <summary>
-        /// Invoked before the session state is acquired.
+        /// Invoked after the request.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
         /// <param name="cb"></param>
         /// <param name="extraData"></param>
         /// <returns></returns>
-        IAsyncResult OnBeginAcquireRequestStateAsync(object sender, EventArgs args, AsyncCallback cb, object extraData)
+        IAsyncResult OnBeginPostRequestHandlerExecuteAsync(object sender, EventArgs args, AsyncCallback cb, object extraData)
         {
             // ignore spurious calls
             var context = HttpContext.Current;
@@ -144,19 +167,48 @@ namespace AspNetClassicSessionState.AspNet
             // only generate for classic ASP requests
             if (context.Request.CurrentExecutionFilePathExtension == ".asp")
             {
-                // unmap our temporary state handler.
-                if (context.Handler is EnableSessionStateHandler)
-                    context.Handler = null;
+                // copy session state from proxy
+                var proxy = (AspNetStateProxy)context.Items[ContextProxyPtrKey];
+                var state = LoadFromAsp(proxy.State).ToDictionary(i => i.Key, i => i.Value);
+
+                // apply new values
+                foreach (var kvp in state)
+                    context.Session[kvp.Key] = kvp.Value;
+
+                // remove missing values
+                foreach (var key in context.Session.Keys.Cast<string>().ToList())
+                    if (state.ContainsKey(key) == false)
+                        context.Session.Remove(key);
             }
 
             return new CompletedAsyncResult(true);
         }
 
         /// <summary>
-        /// Invoked before the session state is acquired.
+        /// Returns an enumeration of key value pair as the state should be communicated to ASP.
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        Dictionary<string, object> LoadFromAsp(Dictionary<string, object> state)
+        {
+            var dict = new Dictionary<string, object>();
+
+            foreach (var kvp in state)
+            {
+                if (kvp.Key.StartsWith("ASPNET:"))
+                    dict[kvp.Key.Substring("ASPNET:".Length)] = kvp.Value;
+                else
+                    dict["ASP:" + kvp.Key] = kvp.Value;
+            }
+
+            return dict;
+        }
+
+        /// <summary>
+        /// Invoked after the request.
         /// </summary>
         /// <param name="ar"></param>
-        void OnEndAcquireRequestStateAsync(IAsyncResult ar)
+        void OnEndPostRequestHandlerExecuteAsync(IAsyncResult ar)
         {
 
         }
@@ -179,25 +231,12 @@ namespace AspNetClassicSessionState.AspNet
             // only generate for classic ASP requests
             if (context.Request.CurrentExecutionFilePathExtension == ".asp")
             {
+                // release proxy
+                var proxy = (AspNetStateProxy)context.Items[ContextProxyPtrKey];
+                var intPtr = Marshal.GetIUnknownForObject(proxy);
+                Marshal.Release(intPtr);
+                Marshal.Release(intPtr);
                 context.Items[ContextProxyPtrKey] = null;
-
-                try
-                {
-                    if (context.Request.Headers[HeadersProxyPtrKey] is string iunkPtrTxt && long.TryParse(iunkPtrTxt, out var iunkPtrL))
-                    {
-                        // pointer in headers represents a reference to object, release
-                        var iunkPtr = new IntPtr(iunkPtrL);
-                        if (iunkPtr != IntPtr.Zero)
-                            Marshal.Release(iunkPtr);
-
-                        // remove header
-                        context.Request.Headers.Remove(HeadersProxyPtrKey);
-                    }
-                }
-                catch
-                {
-                    // ignore all exceptions, we tried our best
-                }
             }
 
             return new CompletedAsyncResult(true);

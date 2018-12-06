@@ -9,14 +9,13 @@
         Dim AspNetState
         Set AspNetState = Server.CreateObject("AspNetClassicSessionState.AspNetState")
 
-        Response.Write "ASP.NET Variable: "
-        Response.Write Session("ASPNetVar")
-        Session("ASPClassicVar") = "THIS WAS SET BY ASP CLASSIC"
+        Response.Write "ASP.NET Variable: " & Session("ASPNET:Variable")
+        Session("Variable") = "THIS WAS SET BY ASP CLASSIC"
     %>
 
     <br />
 
-    I saved a value to to the ASPClassicVar variable. Go back to the <a href="Test.aspx">ASP.NET page</a> to see the value. 
+    I saved a value to to the Variable variable. Go back to the <a href="Test.aspx">ASP.NET page</a> to see the value. 
 
 </body>
 </html>
