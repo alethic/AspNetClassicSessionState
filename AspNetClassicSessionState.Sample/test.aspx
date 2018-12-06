@@ -7,8 +7,8 @@
 </head>
 <body>
     <%
-        Response.Write("ASP Classic Variable: " + Session["ASP:Variable"]);
-        Session["Variable"] = "THIS WAS SET BY ASP.NET";
+        Response.Write("Variable: " + Session["ASP::Variable"]);
+        Session["ASP::Variable"] = "THIS WAS SET BY ASP.NET";
     %>
 
     <br />

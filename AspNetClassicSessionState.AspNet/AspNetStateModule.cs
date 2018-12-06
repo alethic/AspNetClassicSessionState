@@ -130,7 +130,7 @@ namespace AspNetClassicSessionState.AspNet
         byte[] SaveForAsp(HttpSessionState state)
         {
             // transform to ASP format
-            var s = state.Cast<string>().ToDictionary(i => i.StartsWith("ASP:") ? i.Substring("ASP:".Length) : "ASPNET:" + i, i => state[i]);
+            var s = state.Cast<string>().Where(i => i.StartsWith("ASP::")).ToDictionary(i => i.Substring("ASP::".Length), i => state[i]);
 
             // serialize to binary stream
             var m = new MemoryStream();
@@ -196,7 +196,7 @@ namespace AspNetClassicSessionState.AspNet
             var s = (Dictionary<string, object>)f.Deserialize(new MemoryStream(buffer));
 
             // transform from ASP format to ASP.Net format
-            var d = s.ToDictionary(i => i.Key.StartsWith("ASPNET:") ? i.Key.Substring("ASPNET:".Length) : "ASP:" + i.Key, i => i.Value);
+            var d = s.ToDictionary(i => "ASP::" + i.Key, i => i.Value);
 
             return d;
         }

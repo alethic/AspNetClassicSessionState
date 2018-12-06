@@ -9,7 +9,7 @@
         Dim AspNetState
         Set AspNetState = Server.CreateObject("AspNetClassicSessionState.AspNetState")
 
-        Response.Write "ASP.NET Variable: " & Session("ASPNET:Variable")
+        Response.Write "Variable: " & Session("Variable")
         Session("Variable") = "THIS WAS SET BY ASP CLASSIC"
     %>
 
