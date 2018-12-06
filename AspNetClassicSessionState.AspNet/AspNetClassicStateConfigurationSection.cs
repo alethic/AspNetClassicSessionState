@@ -25,16 +25,6 @@ namespace AspNetClassicSessionState.AspNet
             set => this["enabled"] = value;
         }
 
-        /// <summary>
-        /// Determines the prefix to apply to ASP Classic session variables within ASP.NET.
-        /// </summary>
-        [ConfigurationProperty("prefix", DefaultValue = "ASP_")]
-        public string Prefix
-        {
-            get => (string)this["prefix"];
-            set => this["prefix"] = value;
-        }
-
     }
 
 }
