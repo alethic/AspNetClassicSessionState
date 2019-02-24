@@ -6,7 +6,7 @@ variables:
 
 steps:
 
-- task: gittools.gitversion.gitversion-task.GitVersion@3
+- task: gittools.gitversion.gitversion-task.GitVersion@4
 
 - task: NuGetToolInstaller@0
   displayName: Use NuGet 4.x
