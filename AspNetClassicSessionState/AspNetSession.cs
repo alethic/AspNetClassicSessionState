@@ -36,6 +36,14 @@ namespace AspNetClassicSessionState
         }
 
         /// <summary>
+        /// Abandons the session.
+        /// </summary>
+        public void Abandon()
+        {
+            GetProxy().Abandon();
+        }
+
+        /// <summary>
         /// Discovers the proxy by examining the request context.
         /// </summary>
         /// <returns></returns>
