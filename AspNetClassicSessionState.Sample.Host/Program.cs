@@ -59,6 +59,8 @@ namespace AspNetClassicSessionState.Sample.Host
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
+            FileAndServe.HttpSys.HttpSysUtil.EnsureUrlAcl("http", "*:40176:");
+
             new AppHostBuilder()
                 .ConfigureWeb(GetManifestResource("Web.config"), h => h
                     .SystemWeb(w => w.Compilation(c => c.TempDirectory(GetTempPath("F")))))
@@ -68,7 +70,7 @@ namespace AspNetClassicSessionState.Sample.Host
                         .HttpCompression(c => c.Directory(GetTempPath("X"))))
                     .Site(1, s => s
                         .RemoveBindings()
-                        .AddBinding("http", "*:41177:*")
+                        .AddBinding("http", "*:40176:")
                         .Application("/", a => a
                             .VirtualDirectory("/", v => v.UsePhysicalPath(NormalizePath(@"..\..\..\..\AspNetClassicSessionState.Sample"))))))
                 .Build()

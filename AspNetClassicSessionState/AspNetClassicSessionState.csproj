@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net46</TargetFramework>
+        <TargetFramework>net47</TargetFramework>
         <EnableComExport>true</EnableComExport>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Authors>Jerome Haltom</Authors>
@@ -21,11 +21,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Cogito.COM.MsBuild" Version="0.1.0-alpha0007">
+      <PackageReference Include="Cogito.COM.MSBuild" Version="0.1.21">
         <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+      <PackageReference Include="Cogito.Core" Version="3.0.0" />
       <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-      <PackageReference Include="System.ValueTuple" Version="4.5.0" />
       <PackageReference Include="WebActivatorEx" Version="2.2.0" />
     </ItemGroup>
 
