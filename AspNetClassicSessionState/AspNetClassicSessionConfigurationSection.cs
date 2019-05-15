@@ -15,7 +15,7 @@ namespace AspNetClassicSessionState
         static readonly AspNetClassicSessionConfigurationSection _defaultSection = new AspNetClassicSessionConfigurationSection()
         {
             Enabled = true,
-            Prefix = "ASP::",
+            Prefix = "",
         };
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace AspNetClassicSessionState
         /// <summary>
         /// Gets or sets the prefix of state variables stored in ASP.Net Session State.
         /// </summary>
-        [ConfigurationProperty("prefix", DefaultValue = "ASP::")]
+        [ConfigurationProperty("prefix", DefaultValue = "")]
         public string Prefix
         {
             get => (string)this["prefix"];
