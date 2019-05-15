@@ -46,6 +46,14 @@ namespace AspNetClassicSessionState
             get => context.Session.SessionID;
         }
 
+        /// <summary>
+        /// Abandons the current session.
+        /// </summary>
+        public void Abandon()
+        {
+            context.Session.Abandon();
+        }
+
     }
 
 }

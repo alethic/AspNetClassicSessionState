@@ -13,6 +13,8 @@ namespace AspNetClassicSessionState
 
         string SessionID { get; }
 
+        void Abandon();
+
     }
 
 }
