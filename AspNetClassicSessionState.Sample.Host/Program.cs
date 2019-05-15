@@ -2,6 +2,9 @@
 using System.IO;
 using System.Reflection;
 
+using Autofac;
+
+using Cogito.Autofac;
 using Cogito.HostedWebCore;
 using Cogito.Web.Configuration;
 
@@ -61,7 +64,12 @@ namespace AspNetClassicSessionState.Sample.Host
         {
             FileAndServe.HttpSys.HttpSysUtil.EnsureUrlAcl("http", "*:40176:");
 
+            var builder = new ContainerBuilder();
+            builder.RegisterAllAssemblyModules();
+            var container = builder.Build();
+
             new AppHostBuilder()
+                .UseLogger(container.Resolve<Microsoft.Extensions.Logging.ILogger>())
                 .ConfigureWeb(GetManifestResource("Web.config"), h => h
                     .SystemWeb(w => w.Compilation(c => c.TempDirectory(GetTempPath("F")))))
                 .ConfigureApp(GetManifestResource("ApplicationHost.config"), h => h

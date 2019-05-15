@@ -27,16 +27,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.9.2" />
     <PackageReference Include="Cogito.AspNet.MSBuild" Version="0.1.9">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Cogito.Autofac" Version="1.2.1" />
     <PackageReference Include="Cogito.COM.MsBuild" Version="0.1.21">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Cogito.Extensions.Logging.Serilog.Autofac" Version="1.1.0" />
     <PackageReference Include="Cogito.HostedWebCore" Version="1.2.1" />
     <PackageReference Include="FileAndServe.HttpSys" Version="4.1.18" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
