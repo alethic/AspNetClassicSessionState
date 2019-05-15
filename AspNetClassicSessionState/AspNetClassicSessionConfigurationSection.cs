@@ -10,10 +10,19 @@ namespace AspNetClassicSessionState
     {
 
         /// <summary>
+        /// Default if unavailable.
+        /// </summary>
+        static readonly AspNetClassicSessionConfigurationSection _defaultSection = new AspNetClassicSessionConfigurationSection()
+        {
+            Enabled = true,
+            Prefix = "ASP::",
+        };
+
+        /// <summary>
         /// Gets the <see cref="AspNetClassicSessionConfigurationSection"/>.
         /// </summary>
         /// <returns></returns>
-        public static AspNetClassicSessionConfigurationSection DefaultSection => ((AspNetClassicSessionConfigurationSection)ConfigurationManager.GetSection("aspNetClassicSessionState"));
+        public static AspNetClassicSessionConfigurationSection DefaultSection => (AspNetClassicSessionConfigurationSection)ConfigurationManager.GetSection("aspNetClassicSession") ?? _defaultSection;
 
         /// <summary>
         /// Determines whether ASP Classic Session state to ASP.Net forwarding is enabled.
