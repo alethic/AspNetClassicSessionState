@@ -28,6 +28,14 @@ namespace AspNetClassicSessionState
         }
 
         /// <summary>
+        /// Gets the unique session ID.
+        /// </summary>
+        public string SessionID
+        {
+            get => GetProxy().SessionID;
+        }
+
+        /// <summary>
         /// Discovers the proxy by examining the request context.
         /// </summary>
         /// <returns></returns>

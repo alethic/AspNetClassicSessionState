@@ -38,6 +38,14 @@ namespace AspNetClassicSessionState
             set => context.Session[config.Prefix + key] = value;
         }
 
+        /// <summary>
+        /// Gets the unique session ID.
+        /// </summary>
+        public string SessionID
+        {
+            get => context.Session.SessionID;
+        }
+
     }
 
 }

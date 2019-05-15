@@ -11,6 +11,8 @@ namespace AspNetClassicSessionState
 
         object this[string key] { get; set; }
 
+        string SessionID { get; }
+
     }
 
 }
