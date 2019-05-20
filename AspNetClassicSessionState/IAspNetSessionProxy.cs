@@ -9,12 +9,13 @@ namespace AspNetClassicSessionState
     public interface IAspNetSessionProxy
     {
 
-        object this[string key] { get; set; }
-
         string SessionID { get; }
 
-        void Abandon();
+        object this[string key] { get; set; }
 
+        void Remove(string key);
+
+        void Abandon();
     }
 
 }

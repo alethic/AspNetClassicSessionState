@@ -17,6 +17,14 @@ namespace AspNetClassicSessionState
     {
 
         /// <summary>
+        /// Gets the unique session ID.
+        /// </summary>
+        public string SessionID
+        {
+            get => GetProxy().SessionID;
+        }
+
+        /// <summary>
         /// Gets or sets an item in session state by the given key.
         /// </summary>
         /// <param name="key"></param>
@@ -28,11 +36,12 @@ namespace AspNetClassicSessionState
         }
 
         /// <summary>
-        /// Gets the unique session ID.
+        /// Removes the requested item from session state.
         /// </summary>
-        public string SessionID
+        /// <param name="key"></param>
+        public void Remove(string key)
         {
-            get => GetProxy().SessionID;
+            GetProxy().Remove(key);
         }
 
         /// <summary>
