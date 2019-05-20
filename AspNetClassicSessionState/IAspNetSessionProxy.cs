@@ -15,6 +15,8 @@ namespace AspNetClassicSessionState
 
         void Remove(string key);
 
+        void RemoveAll();
+
         void Abandon();
     }
 

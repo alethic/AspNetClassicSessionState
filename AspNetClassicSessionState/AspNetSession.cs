@@ -45,6 +45,14 @@ namespace AspNetClassicSessionState
         }
 
         /// <summary>
+        /// Removes all keys and values from session state.
+        /// </summary>
+        public void RemoveAll()
+        {
+            GetProxy().RemoveAll();
+        }
+
+        /// <summary>
         /// Abandons the session.
         /// </summary>
         public void Abandon()

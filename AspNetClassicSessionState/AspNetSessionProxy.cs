@@ -56,6 +56,14 @@ namespace AspNetClassicSessionState
         }
 
         /// <summary>
+        /// Removes all keys and values from the session state.
+        /// </summary>
+        public void RemoveAll()
+        {
+            context.Session.RemoveAll();
+        }
+
+        /// <summary>
         /// Abandons the current session.
         /// </summary>
         public void Abandon()
