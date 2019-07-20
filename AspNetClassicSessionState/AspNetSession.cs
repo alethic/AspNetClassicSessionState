@@ -70,6 +70,22 @@ namespace AspNetClassicSessionState
         }
 
         /// <summary>
+        /// Gets a value indicating whether the session is read-only.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get => GetProxy().IsReadOnly;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether access to the collection of session-state values is synchronized (thread safe).
+        /// </summary>
+        public bool IsSynchronized
+        {
+            get => GetProxy().IsSynchronized;
+        }
+
+        /// <summary>
         /// Abandons the session.
         /// </summary>
         public void Abandon()

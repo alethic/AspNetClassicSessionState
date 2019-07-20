@@ -24,6 +24,16 @@ namespace AspNetClassicSessionState
         /// </summary>
         bool IsNewSession { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether the session is read-only.
+        /// </summary>
+        bool IsReadOnly { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether access to the collection of session-state values is synchronized (thread safe).
+        /// </summary>
+        bool IsSynchronized { get; }
+
         void Abandon();
     }
 

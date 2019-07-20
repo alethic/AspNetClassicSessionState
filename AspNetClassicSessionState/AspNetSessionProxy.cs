@@ -81,6 +81,22 @@ namespace AspNetClassicSessionState
         }
 
         /// <summary>
+        /// Gets a value indicating whether the session is read-only.
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get => context.Session.IsReadOnly;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether access to the collection of session-state values is synchronized (thread safe).
+        /// </summary>
+        public bool IsSynchronized
+        {
+            get => context.Session.IsSynchronized;
+        }
+
+        /// <summary>
         /// Abandons the current session.
         /// </summary>
         public void Abandon()
