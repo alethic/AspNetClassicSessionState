@@ -9,9 +9,13 @@ namespace AspNetClassicSessionState
     public interface IAspNetSessionProxy
     {
 
+        string SessionID { get; }
+
         object this[string key] { get; set; }
 
-        string SessionID { get; }
+        void Remove(string key);
+
+        void RemoveAll();
 
         int Timeout { get; set; }
 
@@ -21,7 +25,6 @@ namespace AspNetClassicSessionState
         bool IsNewSession { get; }
 
         void Abandon();
-
     }
 
 }

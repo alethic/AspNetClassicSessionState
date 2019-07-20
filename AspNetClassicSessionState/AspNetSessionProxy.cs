@@ -28,6 +28,14 @@ namespace AspNetClassicSessionState
         }
 
         /// <summary>
+        /// Gets the unique session ID.
+        /// </summary>
+        public string SessionID
+        {
+            get => context.Session.SessionID;
+        }
+
+        /// <summary>
         /// Gets or sets an object in state.
         /// </summary>
         /// <param name="key"></param>
@@ -39,11 +47,20 @@ namespace AspNetClassicSessionState
         }
 
         /// <summary>
-        /// Gets the unique session ID.
+        /// Removes the given item from state.
         /// </summary>
-        public string SessionID
+        /// <param name="key"></param>
+        public void Remove(string key)
         {
-            get => context.Session.SessionID;
+            context.Session.Remove(key);
+        }
+
+        /// <summary>
+        /// Removes all keys and values from the session state.
+        /// </summary>
+        public void RemoveAll()
+        {
+            context.Session.RemoveAll();
         }
 
         /// <summary>
