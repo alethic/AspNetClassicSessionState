@@ -102,7 +102,7 @@ namespace AspNetClassicSessionState
             var request = (IRequest)System.EnterpriseServices.ContextUtil.GetNamedProperty("Request");
             if (request == null)
                 throw new InvalidOperationException("Unable to locate request context.");
-
+            
             // unique ID for the request
             var variables = (IStringList)request.ServerVariables["HTTP_" + AspNetClassicSessionModule.HeaderProxyPtrKey];
             var intPtrEnc = variables?.Count >= 1 ? (string)variables[1] : null;
