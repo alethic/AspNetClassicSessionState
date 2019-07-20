@@ -13,6 +13,13 @@ namespace AspNetClassicSessionState
 
         string SessionID { get; }
 
+        int Timeout { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the session was created with the current request.
+        /// </summary>
+        bool IsNewSession { get; }
+
         void Abandon();
 
     }

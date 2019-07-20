@@ -36,6 +36,23 @@ namespace AspNetClassicSessionState
         }
 
         /// <summary>
+        /// Gets or sets the session timeout.
+        /// </summary>
+        public int Timeout
+        {
+            get => GetProxy().Timeout;
+            set => GetProxy().Timeout = value;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the session was created with the current request.
+        /// </summary>
+        public bool IsNewSession
+        {
+            get => GetProxy().IsNewSession;
+        }
+
+        /// <summary>
         /// Abandons the session.
         /// </summary>
         public void Abandon()

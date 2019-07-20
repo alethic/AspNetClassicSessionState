@@ -47,6 +47,23 @@ namespace AspNetClassicSessionState
         }
 
         /// <summary>
+        /// Gets or sets the session timeout.
+        /// </summary>
+        public int Timeout
+        {
+            get => context.Session.Timeout;
+            set => context.Session.Timeout = value;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the session was created with the current request.
+        /// </summary>
+        public bool IsNewSession
+        {
+            get => context.Session.IsNewSession;
+        }
+
+        /// <summary>
         /// Abandons the current session.
         /// </summary>
         public void Abandon()
